@@ -37,3 +37,4 @@ class Layer():
 			return softmax(activation_vector)
 		else:
 			return activation_vector
+
