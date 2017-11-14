@@ -18,7 +18,7 @@ class Display():
         y = self.weights[:, 1]
         print(x)
         plt.scatter(x, y, c="blue", alpha=0.5, marker='x', label="Chosen path")
-        plt.pause(0.01)
+        plt.pause(0.001)
         for i in range(len(self.weights)-1):
             x1 = x[i]
             x2 = x[i+1]
@@ -28,11 +28,11 @@ class Display():
             plt.plot([x1, x2], [y1, y2], color='k', linestyle='-', linewidth=1)
             plt.pause(0.01)
         plt.plot([x[0], x[-1]], [y[0], y[-1]], color='k', linestyle='-', linewidth=1)
-        plt.pause(0.01)
+        plt.pause(0.001)
         a = self.cities[:, 0]
         b = self.cities[:, 1]
         plt.scatter(a, b, c="red", alpha=0.5, marker='o', label="City")
-        plt.pause(0.01)
+        plt.pause(0.001)
 
         plt.xlabel("Leprechauns")
         plt.ylabel("Gold")
