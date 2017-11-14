@@ -37,6 +37,23 @@ class Display():
 if __name__ == '__main__':
     data_manager = DataManager(0)
     network = Network(data_manager=data_manager)
+
+    # Parameters:
+    epochs = 200
+    learning_rate = 0.01
+    learning_decay = 0.5
+    initial_neighborhood = 3
+    neighborhood_decay = 0.2
+
+
+    network = Network(epochs=epochs, learning_rate=learning_rate,
+                      learning_decay=learning_decay, initial_neighborhood=initial_neighborhood,
+                      neighborhood_decay=neighborhood_decay, data_manager=data_manager)
     network.train()
+
+
+
+
+
     display = Display(network, data_manager)
     display.plot_output_weights()
