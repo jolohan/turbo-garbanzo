@@ -7,7 +7,7 @@ import random
 class Network():
 
     def __init__(self, input_activation_func='euclidean', output_activation_func='euclidean',
-                 input_size=2, output_size=100, epochs=10, learning_rate=0.01, learning_decay=1.0):
+                 input_size=2, output_size=100, epochs=40, learning_rate=0.01, learning_decay=1.0):
     	self.data_manager = DataManager(1)
     	self.input_size = self.data_manager.input_size
     	self.output_size = self.data_manager.output_size
@@ -25,7 +25,7 @@ class Network():
        	return output
 
     def run_once(self, input):
-    	return np.argmax(self.forward(input))
+    	return np.argmin(self.forward(input))
 
     def train(self):
     	for t in range(self.epochs):
@@ -36,15 +36,12 @@ class Network():
     			index = self.run_once(train_sample)
     			winning_neighbors = [(index + 1)%self.output_size, (index-1)%self.output_size]
     			self.optimize_network(index, winning_neighbors, train_sample, t)
-    	"""
+    	
     	print(self.input[0])
-    	forward = self.forward(self.input[0])
-    	print(forward)
     	index = self.run_once(self.input[0])
     	print(index)
     	print(self.get_weights_to(index))
-    	print(self.get_weights())
-    	"""
+
 
     def get_weights_to(self, j):
     	return self.input_layer.get_out_weights(j)
