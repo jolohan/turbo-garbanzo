@@ -31,9 +31,9 @@ class Layer():
 	# [Input_size x Ouput_size]-matrix ====> [Output_size]-Activation_Vector
 	def compute_activation_vector(self, activations):
 		weight_vector = np.array([n.weights for n in self.nodes])
-		activation_vector = np.dot(activations, weight_vector)
 		if (self.function == 'euclidean'):
 			return euclidean(activations, weight_vector)
+		"""
 		elif (self.function == 'relu'):
 			return [max(a, 0) for a in activation_vector]
 		elif (self.function == 'sigmoid'):
@@ -42,10 +42,9 @@ class Layer():
 			return softmax(activation_vector)
 		else:
 			return activation_vector
-
-l = Layer('euclidean', 4, 2)
-act = l.compute_activation_vector(np.array([1, 0, 1, 0]))
-print(act)
+		"""
+	def get_out_weights(self, j):
+		return [n.weights[j] for n in self.nodes]
 
 
 
