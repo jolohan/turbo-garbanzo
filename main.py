@@ -8,22 +8,24 @@ import time
 class Display():
 
     def __init__(self, network, data_manager):
+        self.network = network
+        self.data_manager = data_manager
         plt.ion()
 
 
     def plot_output_weights(self, fig=None, title='tits'):
-        weights = network.get_weights()
-        self.weights = np.array(weights)
-        self.cities = data_manager.input
+        weights = self.network.get_weights()
+        weights = np.array(weights)
+        cities = self.data_manager.input
         fig = fig if fig else plt.figure()
         axes = fig.gca()
         axes.clear()
-        x = self.weights[:, 0]
-        y = self.weights[:, 1]
+        x = weights[:, 0]
+        y = weights[:, 1]
         #print(x)
         plt.scatter(x, y, c="blue", alpha=0.5, marker='x', label="Chosen path")
         plt.pause(0.001)
-        for i in range(len(self.weights)-1):
+        for i in range(len(weights)-1):
             x1 = x[i]
             x2 = x[i+1]
             #print(x2)
@@ -32,8 +34,8 @@ class Display():
             plt.plot([x1, x2], [y1, y2], color='k', linestyle='-', linewidth=1)
         plt.plot([x[0], x[-1]], [y[0], y[-1]], color='k', linestyle='-', linewidth=1)
         plt.pause(0.001)
-        a = self.cities[:, 0]
-        b = self.cities[:, 1]
+        a = cities[:, 0]
+        b = cities[:, 1]
         plt.scatter(a, b, c="red", alpha=0.5, marker='o', label="City")
         plt.pause(0.001)
 
@@ -48,7 +50,7 @@ class Display():
 
 if __name__ == '__main__':
 
-    data_manager = DataManager(0)
+    data_manager = DataManager(1)
     network = Network(data_manager=data_manager)
 
     # Parameters:
@@ -67,6 +69,7 @@ if __name__ == '__main__':
     network.epochs = 1
     fig = None
     while (keep_training):
+        network.train()
         fig = display.plot_output_weights(fig)
         text = input("How many more epochs do you want to train? 0 to quit. ")
         try:

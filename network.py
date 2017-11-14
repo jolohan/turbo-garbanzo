@@ -81,5 +81,5 @@ class Network():
                 continue
             for i, n in enumerate(self.input_layer.nodes):
                 update = learning_rate * val * (input_values[i] - n.weights[k])
-                print(update)
+                #print(update)
                 n.weights[k] += update
