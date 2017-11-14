@@ -9,10 +9,7 @@ def softmax(vec):
 	return np.exp(vec)/np.sum(np.exp(vec), axis=0)
 
 def euclidean(activations, weights):
-	return [np.linalg.norm(activations - weights[:, j]) for j in range(weights.shape[1])]
-
-
-
+	return [math.pow(np.linalg.norm(activations - weights[:, j]), 2) for j in range(weights.shape[1])]
 
 class Layer():
 

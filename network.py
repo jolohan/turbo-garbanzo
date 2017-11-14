@@ -8,6 +8,9 @@ import random
 def manhattan(x, y):
     return abs(x[0] - y[0]) + abs(x[1] - y[1])
 
+def euclidean(vec_1, vec_2):
+    return math.pow(np.linalg.norm(vec_1 - vec_2), 2)
+
 class Network():
     def __init__(self, input_activation_func='euclidean', output_activation_func='euclidean',
                  input_size=2, output_size=100, epochs=40, learning_rate=0.01, learning_decay=1.0,
@@ -34,25 +37,25 @@ class Network():
         return output
 
     def run_once(self, input):
-        return np.argmin(self.forward(input))
+    	activations = self.forward(input)
+        return np.argmin(activations), activations[np.argmin(activations)]
 
     def train(self):
         test_sample = self.input[0]
-        print("Coordinated: ", test_sample)
-        index = self.run_once(test_sample)
-        print("Inital weights: ", self.get_weights_to(index))
+        PRINT_EVERY = 10
+        avg_loss = 0.0
         for t in range(self.epochs):
-            index = self.run_once(test_sample)
-            before = self.get_weights_to(index)
-            for i in range(len(self.input)):
-                train_index = np.random.choice(len(self.input), 1)
-                train_sample = self.input[train_index[0]]
-                self.optimize_network(index, train_sample, t)
-            after = self.get_weights_to(index)
-            print("Diff = " + str(manhattan(before, after)))
-        print("Coordinates: ", test_sample)
-        index = self.run_once(test_sample)
-        print("Final weights: ", self.get_weights_to(index))
+            train_indexes = np.random.choice(len(self.input), len(self.input), replace=False)
+            for i in train_indexes:
+                train_sample = self.input[train_indexes[i]]
+                train_index, loss = self.run_once(train_sample)
+                self.optimize_network(train_index, train_sample, t)
+                avg_loss += loss
+            if (t > 0 and t % PRINT_EVERY == 0):
+           	    print("Training Epoch " + str(t))
+           	    print("Avg Loss = " + str(avg_loss/t))
+           	    current_distance = self.calculate_tsp_distance()
+           	    print("TSP Distance = " + str(current_distance))
 
     def get_weights_to(self, j):
         return self.input_layer.get_out_weights(j)
@@ -61,25 +64,61 @@ class Network():
         return [self.input_layer.get_out_weights(j) for j in range(self.output_size)]
 
     def get_best_neighbors(self, index, t):
-        neighborhood_size = int(self.initial_neighborhood * math.exp(-t / self.neighborhood_decay))
+        neighborhood_size = self.initial_neighborhood * math.exp(((-1.0*t) / self.neighborhood_decay))
+        #if (t % 10 == 0):
+        #	print("neighborhood_size = " + str(neighborhood_size))
         weights = self.get_weights()
         T_matrix = []
         for j in range(len(weights)):
-            distance = math.pow(abs(index - j), 2)
-            divisor = max(1.0, (2 * math.pow(neighborhood_size, 2)))
-            T_matrix.append(float(-1.0 * (distance / divisor)))
-        sorted_matrix = sorted(((value, index) for index, value in enumerate(T_matrix)), reverse=True)
-        return sorted_matrix[:max(1, neighborhood_size)]
+            d = index - j
+            if (d > (len(weights)/2.0)):
+                distance = math.pow(abs((index - len(weights)) - j), 2)
+            else:
+                distance = math.pow(abs(index - (len(weights) - j)), 2)
+            #distance = math.pow(abs(index - j), 2)
+            #distance = math.pow(manhattan(weights[]))
+            divisor = (2 * math.pow(neighborhood_size, 2))
+            T_matrix.append(math.exp((-1.0 * (distance / max(1.0, divisor)))))
+        sorted_matrix = sorted(((value, index) for index, value in enumerate(T_matrix)), reverse=False)
+        return sorted_matrix#[:max(1, int(neighborhood_size))]
 
     def optimize_network(self, j, input_values, t):
-        learning_rate = self.initial_learning_rate * math.exp(-t / self.learning_decay)
+        learning_rate = self.initial_learning_rate * math.exp(((-1.0*t)/ self.learning_decay))
+        #if (t % 10 == 0):
+        #	print("Learning rate = " + str(learning_rate))
         for i, n in enumerate(self.input_layer.nodes):
+            #print(n.weights[j])
             n.weights[j] += learning_rate * (input_values[i] - n.weights[j])
+            #print("After: ", n.weights[j])
         neighbors = self.get_best_neighbors(j, t)
         for t_val, k in neighbors:
             if (k == j):
                 continue
             for i, n in enumerate(self.input_layer.nodes):
                 update = learning_rate * t_val * (input_values[i] - n.weights[k])
-                print(update)
                 n.weights[k] += update
+
+    def calculate_tsp_distance(self):
+        cities = self.input
+        nodes = self.output_layer.nodes
+        city_nodes = {}
+        for city_idx, city in enumerate(cities):
+            # Find the best node:
+            idx, _ = self.run_once(city)
+            if idx not in city_nodes:
+                city_nodes[idx] = [city]
+            else:
+                city_nodes[idx].append(city)
+
+        # Reorder nodes after city-nodes:
+        tsp_order = []
+        for node_index in range(len(nodes)):
+            if node_index in city_nodes:
+                tsp_order += self.get_weights_to(node_index)
+
+        # Calculate the total distance:
+        tsp_distance = euclidean(tsp_order[0], tsp_order[-1])
+        for idx in range(len(tsp_order)-1):
+            tsp_distance += euclidean(tsp_order[idx], tsp_order[idx + 1])
+
+        return tsp_distance
