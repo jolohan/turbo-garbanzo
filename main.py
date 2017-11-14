@@ -1,5 +1,6 @@
 from network import Network
 from data_manager import DataManager
+from mnist_manager import MNIST
 import matplotlib.pyplot as plt
 import numpy as np
 import time
@@ -43,8 +44,10 @@ class Display():
         plt.draw()
         fig.savefig("plots/tsp/" + title + ".png")
         plt.pause(0.01)
+        return fig
 
 if __name__ == '__main__':
+
     data_manager = DataManager(0)
     network = Network(data_manager=data_manager)
 
@@ -63,9 +66,10 @@ if __name__ == '__main__':
     display = Display(network, data_manager)
     network.epochs = 1
     print(network.get_weights())
+    fig = None
     while (keep_training):
-        display.plot_output_weights()
         network.train()
+        fig = display.plot_output_weights(fig)
         print(network.get_weights())
         text = input("How many more epochs do you want to train? 0 to quit. ")
         try:

@@ -8,7 +8,6 @@ import random
 def manhattan(x, y):
     return abs(x[0] - y[0]) + abs(x[1] - y[1])
 
-
 class Network():
     def __init__(self, input_activation_func='euclidean', output_activation_func='euclidean',
                  input_size=2, output_size=100, epochs=40, learning_rate=0.01, learning_decay=1.0,
