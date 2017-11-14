@@ -8,13 +8,13 @@ import time
 class Display():
 
     def __init__(self, network, data_manager):
-        weights = network.get_weights()
-        self.weights = np.array(weights)
-        self.cities = data_manager.input
         plt.ion()
 
 
     def plot_output_weights(self, fig=None, title='tits'):
+        weights = network.get_weights()
+        self.weights = np.array(weights)
+        self.cities = data_manager.input
         fig = fig if fig else plt.figure()
         axes = fig.gca()
         axes.clear()
@@ -44,6 +44,7 @@ class Display():
         plt.draw()
         fig.savefig("plots/tsp/" + title + ".png")
         plt.pause(0.01)
+        return fig
 
 if __name__ == '__main__':
 
@@ -64,11 +65,9 @@ if __name__ == '__main__':
     keep_training = True
     display = Display(network, data_manager)
     network.epochs = 1
-    #print(network.get_weights())
+    fig = None
     while (keep_training):
-        display.plot_output_weights()
-        network.train()
-        #print(network.get_weights())
+        fig = display.plot_output_weights(fig)
         text = input("How many more epochs do you want to train? 0 to quit. ")
         try:
             network.epochs = (int)(text)

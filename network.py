@@ -65,9 +65,9 @@ class Network():
         weights = self.get_weights()
         T_matrix = []
         for j in range(len(weights)):
-        	distance = math.pow(abs(index - j), 2)
-        	divisor = max(1, (2 * math.pow(neighborhood_size, 2)))
-        	T_matrix.append(float(-1.0*(distance/divisor)))
+            distance = math.pow(abs(index - j), 2)
+            divisor = max(1.0, (2 * math.pow(neighborhood_size, 2)))
+            T_matrix.append(float(-1.0 * (distance / divisor)))
         sorted_matrix = sorted(((value, index) for index, value in enumerate(T_matrix)), reverse=True)
         return sorted_matrix[:max(1, neighborhood_size)]
 
