@@ -3,7 +3,7 @@
 data
 .pyc
 .idea
-
+TSP Data Euclidean
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
