@@ -12,7 +12,7 @@ class DataManager():
         temp_matrix = []
         with open(filename, 'r') as f:
             lines = f.readlines()
-            self.dimension = int(lines[2].split(' ')[1])
+            self.dimension = int(lines[2].split(':')[1])
             for i in range(5, len(lines)):
                 row = lines[i]
                 if (row.rstrip() == 'EOF'):
