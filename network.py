@@ -76,10 +76,10 @@ class Network():
         for i, n in enumerate(self.input_layer.nodes):
             n.weights[j] += learning_rate * (input_values[i] - n.weights[j])
         neighbors = self.get_best_neighbors(j, t)
-        for val, k in neighbors:
+        for t_val, k in neighbors:
             if (k == j):
                 continue
             for i, n in enumerate(self.input_layer.nodes):
-                update = learning_rate * val * (input_values[i] - n.weights[k])
+                update = learning_rate * t_val * (input_values[i] - n.weights[k])
                 print(update)
                 n.weights[k] += update

@@ -23,8 +23,6 @@ class DataManager():
 
         self.input = np.array(temp_matrix)
         self.normalize_data()
-        print(self.input)
-        print("dim: "+str(self.dimension))
         if (self.dimension != len(temp_matrix)):
             print("Something wrong with input loading in def __init__ in Data_Manager")
         self.input_size = 2
