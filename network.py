@@ -42,13 +42,15 @@ class Network():
         index = self.run_once(test_sample)
         print("Inital weights: ", self.get_weights_to(index))
         for t in range(self.epochs):
-            print("\nTraining Epoch " + str(t))
+            index = self.run_once(test_sample)
+            before = self.get_weights_to(index)
             for i in range(len(self.input)):
                 train_index = np.random.choice(len(self.input), 1)
                 train_sample = self.input[train_index[0]]
-                index = self.run_once(train_sample)
                 self.optimize_network(index, train_sample, t)
-        print("Coordinated: ", test_sample)
+            after = self.get_weights_to(index)
+            print("Diff = " + str(manhattan(before, after)))
+        print("Coordinates: ", test_sample)
         index = self.run_once(test_sample)
         print("Final weights: ", self.get_weights_to(index))
 
@@ -61,11 +63,13 @@ class Network():
     def get_best_neighbors(self, index, t):
         neighborhood_size = int(self.initial_neighborhood * math.exp(-t / self.neighborhood_decay))
         weights = self.get_weights()
-        T_matrix = [math.exp(
-            -(math.pow(manhattan(weights[j], weights[index]), 2)) / max(1, (2 * math.pow(neighborhood_size, 2))))
-                    for j in range(len(weights))]
+        T_matrix = []
+        for j in range(len(weights)):
+        	distance = math.pow(abs(index - j), 2)
+        	divisor = max(1, (2 * math.pow(neighborhood_size, 2)))
+        	T_matrix.append(float(-1.0*(distance/divisor)))
         sorted_matrix = sorted(((value, index) for index, value in enumerate(T_matrix)), reverse=True)
-        return sorted_matrix[:neighborhood_size]
+        return sorted_matrix[:max(1, neighborhood_size)]
 
     def optimize_network(self, j, input_values, t):
         learning_rate = self.initial_learning_rate * math.exp(-t / self.learning_decay)
@@ -73,5 +77,9 @@ class Network():
             n.weights[j] += learning_rate * (input_values[i] - n.weights[j])
         neighbors = self.get_best_neighbors(j, t)
         for val, k in neighbors:
+            if (k == j):
+                continue
             for i, n in enumerate(self.input_layer.nodes):
-                n.weights[k] += learning_rate * self.similarity * (input_values[i] - n.weights[k])
+                update = learning_rate * val * (input_values[i] - n.weights[k])
+                print(update)
+                n.weights[k] += update

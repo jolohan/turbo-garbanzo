@@ -52,10 +52,10 @@ if __name__ == '__main__':
 
     # Parameters:
     epochs = 200
-    learning_rate = 0.01
-    learning_decay = 0.5
-    initial_neighborhood = 3
-    neighborhood_decay = 0.2
+    learning_rate = 0.1
+    learning_decay = 1.0
+    initial_neighborhood = 10
+    neighborhood_decay = 0.9
 
 
     network = Network(epochs=epochs, learning_rate=learning_rate,
@@ -64,11 +64,11 @@ if __name__ == '__main__':
     keep_training = True
     display = Display(network, data_manager)
     network.epochs = 1
-    print(network.get_weights())
+    #print(network.get_weights())
     while (keep_training):
         display.plot_output_weights()
         network.train()
-        print(network.get_weights())
+        #print(network.get_weights())
         text = input("How many more epochs do you want to train? 0 to quit. ")
         try:
             network.epochs = (int)(text)
