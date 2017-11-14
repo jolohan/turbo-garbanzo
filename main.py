@@ -13,7 +13,10 @@ class Display():
         plt.ion()
 
 
-    def plot_output_weights(self):
+    def plot_output_weights(self, fig=None, title='tits'):
+        fig = fig if fig else plt.figure()
+        axes = fig.gca()
+        axes.clear()
         x = self.weights[:, 0]
         y = self.weights[:, 1]
         print(x)
@@ -26,7 +29,6 @@ class Display():
             y1 = y[i]
             y2 = y[i+1]
             plt.plot([x1, x2], [y1, y2], color='k', linestyle='-', linewidth=1)
-            plt.pause(0.01)
         plt.plot([x[0], x[-1]], [y[0], y[-1]], color='k', linestyle='-', linewidth=1)
         plt.pause(0.001)
         a = self.cities[:, 0]
@@ -37,8 +39,10 @@ class Display():
         plt.xlabel("Leprechauns")
         plt.ylabel("Gold")
         plt.legend(loc=2)
-        #plt.show()
-        time.sleep(3)
+        axes.autoscale_view()
+        plt.draw()
+        fig.savefig("plots/tsp/" + title + ".png")
+        plt.pause(0.01)
 
 if __name__ == '__main__':
     data_manager = DataManager(0)
@@ -55,11 +59,23 @@ if __name__ == '__main__':
     network = Network(epochs=epochs, learning_rate=learning_rate,
                       learning_decay=learning_decay, initial_neighborhood=initial_neighborhood,
                       neighborhood_decay=neighborhood_decay, data_manager=data_manager)
-    network.train()
-
-
-
-
-
+    keep_training = True
     display = Display(network, data_manager)
-    display.plot_output_weights()
+    network.epochs = 1
+    print(network.get_weights())
+    while (keep_training):
+        display.plot_output_weights()
+        network.train()
+        print(network.get_weights())
+        text = input("How many more epochs do you want to train? 0 to quit. ")
+        try:
+            network.epochs = (int)(text)
+            if (network.epochs <= 0):
+                keep_training = False
+        except:
+            print("Fail. Enter a number")
+
+
+
+
+
