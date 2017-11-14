@@ -8,25 +8,25 @@ import time
 class Display():
 
     def __init__(self, network, data_manager):
-        weights = network.get_weights()
-        self.weights = np.array(weights)
-        self.cities = data_manager.input
         plt.ion()
 
 
     def plot_output_weights(self, fig=None, title='tits'):
+        weights = network.get_weights()
+        self.weights = np.array(weights)
+        self.cities = data_manager.input
         fig = fig if fig else plt.figure()
         axes = fig.gca()
         axes.clear()
         x = self.weights[:, 0]
         y = self.weights[:, 1]
-        print(x)
+        #print(x)
         plt.scatter(x, y, c="blue", alpha=0.5, marker='x', label="Chosen path")
         plt.pause(0.001)
         for i in range(len(self.weights)-1):
             x1 = x[i]
             x2 = x[i+1]
-            print(x2)
+            #print(x2)
             y1 = y[i]
             y2 = y[i+1]
             plt.plot([x1, x2], [y1, y2], color='k', linestyle='-', linewidth=1)
@@ -53,10 +53,10 @@ if __name__ == '__main__':
 
     # Parameters:
     epochs = 200
-    learning_rate = 0.01
-    learning_decay = 0.5
-    initial_neighborhood = 3
-    neighborhood_decay = 0.2
+    learning_rate = 0.1
+    learning_decay = 1.0
+    initial_neighborhood = 10
+    neighborhood_decay = 0.9
 
 
     network = Network(epochs=epochs, learning_rate=learning_rate,
@@ -65,12 +65,9 @@ if __name__ == '__main__':
     keep_training = True
     display = Display(network, data_manager)
     network.epochs = 1
-    print(network.get_weights())
     fig = None
     while (keep_training):
-        network.train()
         fig = display.plot_output_weights(fig)
-        print(network.get_weights())
         text = input("How many more epochs do you want to train? 0 to quit. ")
         try:
             network.epochs = (int)(text)
