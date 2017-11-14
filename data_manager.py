@@ -8,7 +8,7 @@ class Data_Manager():
     output_size = None
 
     def __init__(self, filenumber):
-        filename = (str)(filenumber) + '.txt'
+        filename = "TSP Data Euclidean/" + str(filenumber) + '.txt'
         temp_matrix = []
         with open(filename, 'r') as f:
             lines = f.readlines()
