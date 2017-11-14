@@ -8,6 +8,11 @@ def sigmoid(x):
 def softmax(vec):
 	return np.exp(vec)/np.sum(np.exp(vec), axis=0)
 
+def euclidean(activations, weights):
+	return [np.linalg.norm(activations - weights[:, j]) for j in range(weights.shape[1])]
+
+
+
 
 class Layer():
 
@@ -25,10 +30,10 @@ class Layer():
 	# Handling OUTPUT Activation of nodes in the given layer:
 	# [Input_size x Ouput_size]-matrix ====> [Output_size]-Activation_Vector
 	def compute_activation_vector(self, activations):
-		weight_vector = [n.weights for n in self.nodes]
+		weight_vector = np.array([n.weights for n in self.nodes])
 		activation_vector = np.dot(activations, weight_vector)
-		if (self.function == 'linear'):
-			return activation_vector
+		if (self.function == 'euclidean'):
+			return euclidean(activations, weight_vector)
 		elif (self.function == 'relu'):
 			return [max(a, 0) for a in activation_vector]
 		elif (self.function == 'sigmoid'):
@@ -37,4 +42,17 @@ class Layer():
 			return softmax(activation_vector)
 		else:
 			return activation_vector
+
+l = Layer('euclidean', 4, 2)
+act = l.compute_activation_vector(np.array([1, 0, 1, 0]))
+print(act)
+
+
+
+
+
+
+
+
+
 
