@@ -37,6 +37,10 @@ class Network():
         return np.argmin(self.forward(input))
 
     def train(self):
+        test_sample = self.input[0]
+        print("Coordinated: ", test_sample)
+        index = self.run_once(test_sample)
+        print("Inital weights: ", self.get_weights_to(index))
         for t in range(self.epochs):
             print("\nTraining Epoch " + str(t))
             for i in range(len(self.input)):
@@ -44,6 +48,9 @@ class Network():
                 train_sample = self.input[train_index[0]]
                 index = self.run_once(train_sample)
                 self.optimize_network(index, train_sample, t)
+        print("Coordinated: ", test_sample)
+        index = self.run_once(test_sample)
+        print("Final weights: ", self.get_weights_to(index))
 
     def get_weights_to(self, j):
         return self.input_layer.get_out_weights(j)

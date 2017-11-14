@@ -17,13 +17,13 @@ class Display():
     def plot_output_weights(self):
         x = self.weights[:, 0]
         y = self.weights[:, 1]
-        print(x)
+        #print(x)
         plt.scatter(x, y, c="blue", alpha=0.5, marker='x', label="Chosen path")
         plt.pause(0.001)
         for i in range(len(self.weights)-1):
             x1 = x[i]
             x2 = x[i+1]
-            print(x2)
+            #print(x2)
             y1 = y[i]
             y2 = y[i+1]
             plt.plot([x1, x2], [y1, y2], color='k', linestyle='-', linewidth=1)
