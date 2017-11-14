@@ -1,5 +1,6 @@
 from network import Network
 from data_manager import DataManager
+from mnist_manager import MNIST
 import matplotlib.pyplot as plt
 import numpy as np
 import time
@@ -45,6 +46,7 @@ class Display():
         plt.pause(0.01)
 
 if __name__ == '__main__':
+
     data_manager = DataManager(0)
     network = Network(data_manager=data_manager)
 
