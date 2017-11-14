@@ -3,9 +3,14 @@ import matplotlib.pyplot as plt
 
 class Node():
 	
-	def __init__(self, output_size, weight_interval=[-1.0, 1.0]):
-		self.init_weights(output_size, weight_interval)
+	def __init__(self, output_size, output_layer=False, weight_interval=[-1.0, 1.0]):
+		self.output_layer = output_layer
+		if not output_layer:
+			self.init_weights(output_size, weight_interval)
+		else:
+			self.weights = []
 		self.activation = 0.0
+
 
 
 	# Handling Weights:
