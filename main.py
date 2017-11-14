@@ -1,5 +1,6 @@
 from network import Network
 from data_manager import DataManager
+from mnist_manager import MNIST
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -36,6 +37,8 @@ class Display():
 
 if __name__ == '__main__':
     data_manager = DataManager(1)
+    mnist_manager = MNIST()
+    print(mnist_manager.labels)
 
     # Parameters:
     epochs = 200
