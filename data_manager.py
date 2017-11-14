@@ -31,4 +31,6 @@ class DataManager():
         self.output_size = self.dimension*1
 
     def normalize_data(self, min_value=0, max_value=1):
-        self.input = self.input / np.linalg.norm(self.input)
+        self.input[:, 0] = [((x-min(self.input[:, 0]))/(max(self.input[:,0]) - min(self.input[:, 0]))) for x in self.input[:, 0]]
+        self.input[:, 1] = [((x-min(self.input[:, 1]))/(max(self.input[:,1]) - min(self.input[:, 1]))) for x in self.input[:, 1]]
+

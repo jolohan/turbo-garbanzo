@@ -28,7 +28,7 @@ class Display():
         pass
 
 if __name__ == '__main__':
-    data_manager = DataManager(0)
+    data_manager = DataManager(1)
     network = Network(data_manager=data_manager)
     network.train()
 
