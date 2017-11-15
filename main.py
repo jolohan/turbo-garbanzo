@@ -47,8 +47,8 @@ class Display():
 
 class Interface():
 
-	def __init__(self):
-		self.load_config()
+	def __init__(self, config_file='config/TSP_config.txt'):
+		self.load_config(filename=config_file)
 		self.data_manager = DataManager(self.problem_number)
 
 		network = Network(epochs=self.epochs, learning_rate=self.learning_rate,
@@ -68,7 +68,7 @@ class Interface():
 				except:
 					print("Fail. Enter a number")
 
-	def load_config(self, filename='config/TSP_config.txt'):
+	def load_config(self, filename):
 
 		# Pre-processing config file:
 		network_dict = {}
@@ -100,4 +100,12 @@ class Interface():
 
 
 if __name__ == '__main__':
-	Interface()
+	keep_going = True
+	while (keep_going):
+		config_file_name = input("What config file do you want to run? 'K' to run default. 'Q' to quit. ")
+		if (config_file_name.lower() == 'q'):
+			break
+		if (config_file_name.lower() == 'k'):
+			Interface()
+		else:
+			Interface(config_file=config_file_name)
