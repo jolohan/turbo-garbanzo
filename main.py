@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
 from data_manager import DataManager
 from network import Network
 
@@ -82,9 +81,9 @@ if __name__ == '__main__':
 	data_manager = DataManager(0)
 	network = Network(data_manager=data_manager)
 
-	# Parameters:
+	# Parameters
 	epochs = 100
-	learning_rate = 0.1
+	learning_rate = 0.7
 	learning_decay = 500.0
 	initial_neighborhood = 15
 	neighborhood_decay = 200.0
