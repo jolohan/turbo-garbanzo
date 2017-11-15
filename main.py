@@ -5,15 +5,14 @@ from network import Network
 
 
 class Display():
-	def __init__(self, network, data_manager):
+	def __init__(self, network):
 		self.network = network
-		self.data_manager = data_manager
 		plt.ion()
 
 	def plot_output_weights(self, fig=None, title='tits'):
 		weights = self.network.get_weights()
 		weights = np.array(weights)
-		cities = self.data_manager.input
+		cities = self.network.data_manager.input
 		fig = fig if fig else plt.figure()
 		axes = fig.gca()
 		axes.clear()
@@ -46,42 +45,67 @@ class Display():
 		return fig
 
 
+class Interface():
+
+	def __init__(self, config_file='config/TSP_config.txt'):
+		self.load_config(filename=config_file)
+		self.data_manager = DataManager(self.problem_number)
+
+		network = Network(epochs=self.epochs, learning_rate=self.learning_rate,
+		                  learning_decay=self.learning_decay, initial_neighborhood=self.initial_neighbourhood,
+		                  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager)
+		display = Display(network)
+		fig = None
+		while (network.epochs > 0):
+			network.train()
+			fig = display.plot_output_weights(fig)
+			input_text = "abc"
+			while (input_text != "STOP"):
+				input_text = input("How many more epochs do you want to train? 0 to quit. ")
+				try:
+					network.epochs = (int)(input_text)
+					input_text = "STOP"
+				except:
+					print("Fail. Enter a number")
+
+	def load_config(self, filename):
+
+		# Pre-processing config file:
+		network_dict = {}
+		with open(filename, "r") as file:
+			for line in file:
+				listed_specs = line.split(" ")
+				network_dict[listed_specs[0]] = [item.strip() for item in listed_specs[1:]]
+
+		# Parameters for output generation:
+		self.problem_type = network_dict['Problem'][0]
+
+		if (self.problem_type == 'TSP'):
+			self.problem_number = network_dict['Problem'][1]
+
+		# 1. Epochs (Total number of MINIBATCHES during training)
+		self.epochs = int(network_dict['Epochs'][0])
+
+		# 2. Learning Rate
+		self.learning_rate = float(network_dict['LearningRate'][0])
+
+		# 3. Learning Decay
+		self.learning_decay = float(network_dict['LearningDecay'][0])
+
+		# 4. Initial Neighbourhood
+		self.initial_neighbourhood = float(network_dict['InitialNeighbourhood'][0])
+
+		# 5. Neighbourhood decay
+		self.neighbourhood_decay = float(network_dict['NeighbourhoodDecay'][0])
+
+
 if __name__ == '__main__':
-    data_manager = DataManager(5)
-    network = Network(data_manager=data_manager)
-
-    # Parameters:
-    epochs = 100
-
-    # Learning Rate:
-    learning_rate = 0.7
-
-    # The bigger the slower decay:
-    learning_decay = 1000.0
-
-    # Size of inital neighborhood (NOW OVERRIDEN)
-    initial_neighborhood = 15
-
-    # The bigger the slower decay:
-    neighborhood_decay = 200.0
-    # Nof. nodes per city:
-    node_multiplier = 5
-
-    network = Network(epochs=epochs, learning_rate=learning_rate,
-	                   learning_decay=learning_decay, initial_neighborhood=initial_neighborhood,
-	                   neighborhood_decay=neighborhood_decay, data_manager=data_manager, node_multiplier=node_multiplier)
-    keep_training = True
-    display = Display(network, data_manager)
-    network.epochs = 1
-    fig = None
-    while (keep_training):
-        network.train()
-        # network.input_layer.nodes[0].plot_weights()
-        fig = display.plot_output_weights(fig)
-        text = input("How many more epochs do you want to train? 0 to quit. ")
-        try:
-            network.epochs = (int)(text)
-            if (network.epochs <= 0):
-                keep_training = False
-        except:
-            print("Fail. Enter a number")
+	keep_going = True
+	while (keep_going):
+		config_file_name = input("What config file do you want to run? 'K' to run default. 'Q' to quit. ")
+		if (config_file_name.lower() == 'q'):
+			break
+		if (config_file_name.lower() == 'k'):
+			Interface()
+		else:
+			Interface(config_file=config_file_name)
