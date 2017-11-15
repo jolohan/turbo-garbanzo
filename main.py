@@ -48,7 +48,7 @@ class Display():
 
 
 if __name__ == '__main__':
-	data_manager = DataManager(1)
+	data_manager = DataManager(0)
 	network = Network(data_manager=data_manager)
 
 	# Parameters:
