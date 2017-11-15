@@ -17,19 +17,19 @@ def euclidean(vec_1, vec_2):
 class Network():
     def __init__(self, input_activation_func='euclidean', output_activation_func='euclidean',
                  input_size=2, output_size=100, epochs=40, learning_rate=0.01, learning_decay=1.0,
-                 initial_neighborhood=20, neighborhood_decay=0.5, data_manager=None):
+                 initial_neighborhood=20, neighborhood_decay=0.5, data_manager=None, node_multiplier=5):
         if data_manager == None:
             self.data_manager = DataManager(1)
         else:
             self.data_manager = data_manager
         self.input_size = self.data_manager.input_size
-        self.output_size = self.data_manager.output_size
+        self.output_size = self.data_manager.output_size*node_multiplier
         print(self.input_size, self.output_size)
         self.input = self.data_manager.input
         self.epochs = epochs
         self.similarity = 0.5
         self.initial_learning_rate = learning_rate
-        self.initial_neighborhood = initial_neighborhood
+        self.initial_neighborhood = int(self.output_size*0.1)
         self.learning_decay = learning_decay
         self.neighborhood_decay = neighborhood_decay
         self.input_layer = Layer(input_activation_func, self.input_size, self.output_size)

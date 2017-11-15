@@ -47,19 +47,29 @@ class Display():
 
 
 if __name__ == '__main__':
-    data_manager = DataManager(3)
+    data_manager = DataManager(5)
     network = Network(data_manager=data_manager)
 
     # Parameters:
     epochs = 100
+
+    # Learning Rate:
     learning_rate = 0.7
-    learning_decay = 500.0
+
+    # The bigger the slower decay:
+    learning_decay = 1000.0
+
+    # Size of inital neighborhood (NOW OVERRIDEN)
     initial_neighborhood = 15
+
+    # The bigger the slower decay:
     neighborhood_decay = 200.0
+    # Nof. nodes per city:
+    node_multiplier = 5
 
     network = Network(epochs=epochs, learning_rate=learning_rate,
 	                   learning_decay=learning_decay, initial_neighborhood=initial_neighborhood,
-	                   neighborhood_decay=neighborhood_decay, data_manager=data_manager)
+	                   neighborhood_decay=neighborhood_decay, data_manager=data_manager, node_multiplier=node_multiplier)
     keep_training = True
     display = Display(network, data_manager)
     network.epochs = 1

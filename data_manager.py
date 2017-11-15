@@ -25,7 +25,7 @@ class DataManager():
         if (self.dimension != len(temp_matrix)):
             print("Something wrong with input loading in def __init__ in Data_Manager")
         self.input_size = 2
-        self.output_size = self.dimension*3
+        self.output_size = self.dimension
 
     def normalize(self):
         max_x = max(self.input[:, 0])
