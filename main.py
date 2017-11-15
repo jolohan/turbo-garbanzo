@@ -57,8 +57,8 @@ class Interface():
 		display = Display(network)
 		fig = None
 		while (network.epochs > 0):
-			network.train()
 			fig = display.plot_output_weights(fig)
+			network.train()
 			input_text = "abc"
 			while (input_text != "STOP"):
 				input_text = input("How many more epochs do you want to train? 0 to quit. ")

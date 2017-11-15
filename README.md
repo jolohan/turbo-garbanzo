@@ -7,23 +7,45 @@ At the demo session, you will earn up to 30 points.  There is no written report 
 
 	•	A fully-functioning SOM for solving TSP (3 points)
 	•	
-	•	Graphic visualization of the SOM’s progress as it solves the TSP: the standard 2-d picture that shows the output “ring” gradually fitting to the city locations. (2 points)
+	•	Graphic visualization of the SOM’s progress as it solves the TSP: 
+	the standard 2-d picture that shows the output “ring” gradually fitting 
+	to the city locations. (2 points)
 	•	
-	•	TSP Performance Test (10 points) – You will be given 3 cases from the 8 that you were already given.  In addition, you will get 2 more cases of the same file format and containing no more than 150 cities.  Each case will be worth 2 points.  You need to get an answer within 10% of the optimum to get both points.  Do not count on partial credit for these.
+	•	TSP Performance Test (10 points) – You will be given 3 cases from the 
+	8 that you were already given.  In addition, you will get 2 more cases of 
+	the same file format and containing no more than 150 cities.  
+	Each case will be worth 2 points.  You need to get an answer within 10% of
+	 the optimum to get both points.  Do not count on partial credit for these.
 	•	
 	•	A fully-functioning  2-d SOM for classifying MNIST cases (3 points)
 	•	
-	•	Graphic visualization of the 2-d SOM as it gradually learns to correctly classify the training cases (3 points)
+	•	Graphic visualization of the 2-d SOM as it gradually learns to correctly
+	 classify the training cases (3 points)
 	•	
-	•	MNIST Performance (5 points) – Using any dimensions of the SOM that you find to be appropriate, train on a collection of at least 500 randomly-selected MNIST cases.  Once training has finished, run each training case through the SOM one final time and keep track of the number of correct classifications (i.e. the training accuracy).  Next, run a set of at least 100 randomly-selected MNIST cases (NONE of which can occur in the training set) and calculate the testing accuracy.  Training accuracy must be 85% or better to get full credit (3 points), while test accuracy must be 75% or better to get full credit (2 points).
+	•	MNIST Performance (5 points) – Using any dimensions of the SOM that you 
+	find to be appropriate, train on a collection of at least 500 randomly-selected
+	 MNIST cases.  Once training has finished, run each training case through the 
+	 SOM one final time and keep track of the number of correct classifications 
+	 (i.e. the training accuracy).  Next, run a set of at least 100 randomly-selected
+	  MNIST cases (NONE of which can occur in the training set) and calculate the 
+	  testing accuracy.  Training accuracy must be 85% or better to get full credit (3 points),
+	   while test accuracy must be 75% or better to get full credit (2 points).
 	•	
-	•	Oral Discussion (4 points) – Discuss the key parameters for the SOM and your experiences using them.  A good discussion will include results from different runs (of both TSP and MNIST) using different values of the key parameters.  By now, you should know what these key parameters are.
+	•	Oral Discussion (4 points) – Discuss the key parameters for the SOM and 
+	your experiences using them.  A good discussion will include results from different
+	 runs (of both TSP and MNIST) using different values of the key parameters.  
+	 By now, you should know what these key parameters are.
 
 
 Additional Comments
 
 1)
- If you are having trouble with speed (or lack thereof), be sure to check the numpy documentation for matrix or vector operations that could do many (e.g. 784) simple arithmetic operations in one function call.  The numpy operators are written in C and are thus very fast.  One numpy vector subtraction, for example, is much faster than a Python for loop that does all of the individual element-by-element subtractions in Python.
+ If you are having trouble with speed (or lack thereof), be sure to check the numpy 
+ documentation for matrix or vector operations that could do many (e.g. 784) 
+ simple arithmetic operations in one function call.  
+ The numpy operators are written in C and are thus very fast.  
+ One numpy vector subtraction, for example, is much faster than a Python for loop
+  that does all of the individual element-by-element subtractions in Python.
 
 2) 
 
