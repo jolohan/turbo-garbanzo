@@ -1,0 +1,7 @@
+Problem TSP
+Filenumber 0
+Epochs 100
+Learning_Rate = 0.1
+Learning_Decay = 500.0
+Initial_Neighbourhood 15
+Neihbourhood_Decay = 200.0

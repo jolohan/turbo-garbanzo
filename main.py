@@ -46,8 +46,39 @@ class Display():
 		plt.pause(0.01)
 		return fig
 
+class ConfigFileLoader:
+
+	def load_config(self, filename='config/TSP_config.txt'):
+
+		# Pre-processing config file:
+		network_dict = {}
+		with open(filename, "r") as file:
+			for line in file:
+				listed_specs = line.split(" ")
+				network_dict[listed_specs[0]] = [item.strip() for item in listed_specs[1:]]
+
+		# Parameters for output generation:
+		self.vint = network_dict['VInt'][0]
+		if (self.vint == "None" or self.vint == "0"):
+			self.vint = None
+		else:
+			self.vint = int(self.vint)
+
+		self.showint = network_dict['ShowInt'][0]
+		if (self.showint == "None" or self.showint == "0"):
+			self.showint = None
+		else:
+			self.showint = int(self.showint)
+
+		# 1. Network Dimensions (+ sizes)
+		sizes = network_dict['NetSize']
+		self.sizes = []
+
+		for s in sizes:
+			self.sizes.append(int(s))
 
 if __name__ == '__main__':
+	configloader = ConfigFileLoader()
 	data_manager = DataManager(0)
 	network = Network(data_manager=data_manager)
 
@@ -61,18 +92,16 @@ if __name__ == '__main__':
 	network = Network(epochs=epochs, learning_rate=learning_rate,
 	                  learning_decay=learning_decay, initial_neighborhood=initial_neighborhood,
 	                  neighborhood_decay=neighborhood_decay, data_manager=data_manager)
-	keep_training = True
 	display = Display(network, data_manager)
-	network.epochs = 1
 	fig = None
-	while (keep_training):
+	while (network.epochs>0):
 		network.train()
-		# network.input_layer.nodes[0].plot_weights()
 		fig = display.plot_output_weights(fig)
-		text = input("How many more epochs do you want to train? 0 to quit. ")
-		try:
-			network.epochs = (int)(text)
-			if (network.epochs <= 0):
-				keep_training = False
-		except:
-			print("Fail. Enter a number")
+		input_text = "abc"
+		while(input_text != "STOP"):
+			input_text = input("How many more epochs do you want to train? 0 to quit. ")
+			try:
+				network.epochs = (int)(input_text)
+				input_text = "STOP"
+			except:
+				print("Fail. Enter a number")
