@@ -57,21 +57,21 @@ if __name__ == '__main__':
     initial_neighborhood = 15
     neighborhood_decay = 200.0
 
-	network = Network(epochs=epochs, learning_rate=learning_rate,
-	                  learning_decay=learning_decay, initial_neighborhood=initial_neighborhood,
-	                  neighborhood_decay=neighborhood_decay, data_manager=data_manager)
-	keep_training = True
-	display = Display(network, data_manager)
-	network.epochs = 1
-	fig = None
-	while (keep_training):
-		network.train()
-		# network.input_layer.nodes[0].plot_weights()
-		fig = display.plot_output_weights(fig)
-		text = input("How many more epochs do you want to train? 0 to quit. ")
-		try:
-			network.epochs = (int)(text)
-			if (network.epochs <= 0):
-				keep_training = False
-		except:
-			print("Fail. Enter a number")
+    network = Network(epochs=epochs, learning_rate=learning_rate,
+	                   learning_decay=learning_decay, initial_neighborhood=initial_neighborhood,
+	                   neighborhood_decay=neighborhood_decay, data_manager=data_manager)
+    keep_training = True
+    display = Display(network, data_manager)
+    network.epochs = 1
+    fig = None
+    while (keep_training):
+        network.train()
+        # network.input_layer.nodes[0].plot_weights()
+        fig = display.plot_output_weights(fig)
+        text = input("How many more epochs do you want to train? 0 to quit. ")
+        try:
+            network.epochs = (int)(text)
+            if (network.epochs <= 0):
+                keep_training = False
+        except:
+            print("Fail. Enter a number")
