@@ -25,9 +25,31 @@ class Layer():
 		self.output_layer = output_layer
 		self.init_nodes()
 
-	# Initalizing nodes:
+		# Initalizing nodes:
 	def init_nodes(self):
+		"""
+		radius = 0.1
+		self.nodes = []
+		x = []
+		y = []
+		for i in range(self.input_size):
+			phi = i * 3.14 / self.input_size
+			#print("Phi:", phi)
+			weights = pol2cart(radius, phi)
+			x.append(weights[0])
+			y.append(weights[1])
+		node = Node(self.output_size, self.output_layer, weights=x)
+		self.nodes.append(node)
+		node = Node(self.output_size, self.output_layer, weights=y)
+		self.nodes.append(node)
+		print("Weights:", node.weights)
+		self.nodes.append(node)
+		step = 1.0/(self.input_size**2)
+		self.nodes = [Node(self.output_size, self.output_layer,
+		                   weight_interval=[step*i, step*(i+1)]) for i in range(self.input_size)]
+		"""
 		self.nodes = [Node(self.output_size, self.output_layer) for i in range(self.input_size)]
+
 
 	# Handling OUTPUT Activation of nodes in the given layer:
 	# [Input_size x Ouput_size]-matrix ====> [Output_size]-Activation_Vector
@@ -48,3 +70,8 @@ class Layer():
 
 	def get_out_weights(self, j):
 		return [n.weights[j] for n in self.nodes]
+
+def pol2cart(rho, phi):
+	x = rho * np.cos(phi)
+	y = rho * np.sin(phi)
+	return(x, y)
