@@ -95,8 +95,7 @@ class Network():
 		# Update all Neighbors:
 		for t_val, k in neighbors:
 			for i, n in enumerate(self.input_layer.nodes):
-				update = learning_rate * t_val * (input_values[i] - n.weights[k])
-				n.weights[k] += update
+				n.weights[k] += learning_rate * t_val * (input_values[i] - n.weights[k])
 
 	def calculate_tsp_distance(self):
 		nodes = self.output_layer.nodes

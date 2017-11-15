@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from data_manager import DataManager
 from network import Network
+import os
 
 
 class Display():
@@ -44,29 +45,67 @@ class Display():
 		plt.pause(0.01)
 		return fig
 
-
+		
 class Interface():
 
 	def __init__(self, config_file='config/TSP_config.txt'):
-		self.load_config(filename=config_file)
-		self.data_manager = DataManager(self.problem_number)
+		print("\n--- SOM Module Interface ---\n")
 
-		network = Network(epochs=self.epochs, learning_rate=self.learning_rate,
-		                  learning_decay=self.learning_decay, initial_neighborhood=self.initial_neighbourhood,
-		                  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager)
-		display = Display(network)
-		fig = None
-		while (network.epochs > 0):
-			network.train()
-			fig = display.plot_output_weights(fig)
-			input_text = "abc"
-			while (input_text != "STOP"):
-				input_text = input("How many more epochs do you want to train? 0 to quit. ")
-				try:
-					network.epochs = (int)(input_text)
-					input_text = "STOP"
-				except:
-					print("Fail. Enter a number")
+		# Creating dictionary from all config files:
+		path = "config/"
+		config_dictionary = {}
+		index = 0
+		for subdirs, dirs, files in os.walk(path):
+			for file in files:
+				if ('.txt' in file):
+					config_dictionary[index] = file
+					index += 1
+		config_dictionary[index] = 'Exit'
+
+		finished = False
+
+		while not finished:
+			for key in config_dictionary.keys():
+				print(str(key) + ": ", config_dictionary[key])
+
+			config = input("\nWhich config to run [0/" + str(len(config_dictionary)-1) + "]: ")
+			config_nr = int(config)
+
+			if (config_nr == index):
+				finished = True
+				break
+		
+			self.load_config(filename=path + config_dictionary[config_nr])
+			self.data_manager = DataManager(self.problem_number)
+
+			network = Network(epochs=self.epochs, learning_rate=self.learning_rate,
+							  learning_decay=self.learning_decay, initial_neighborhood=self.initial_neighbourhood,
+							  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager)
+			display = Display(network)
+			fig = None
+			while (network.epochs > 0):
+				network.train()
+				fig = display.plot_output_weights(fig)
+				input_text = "abc"
+				while (input_text != "STOP"):
+					input_text = input("How many more epochs do you want to train? 0 to quit. ")
+					try:
+						network.epochs = (int)(input_text)
+						input_text = "STOP"
+					except:
+						print("Fail. Enter a number")
+
+			done = input("Exit = 0, continue = 1: ")
+
+			try:
+				done = int(done)
+				if (not done):
+					finished = True
+					break
+
+			except:
+				print("Continuing...")
+		print("Exiting...")
 
 	def load_config(self, filename):
 
@@ -100,12 +139,4 @@ class Interface():
 
 
 if __name__ == '__main__':
-	keep_going = True
-	while (keep_going):
-		config_file_name = input("What config file do you want to run? 'K' to run default. 'Q' to quit. ")
-		if (config_file_name.lower() == 'q'):
-			break
-		if (config_file_name.lower() == 'k'):
-			Interface()
-		else:
-			Interface(config_file=config_file_name)
+	Interface()
