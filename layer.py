@@ -1,18 +1,23 @@
-import numpy as np
-from node import Node
 import math
+
+import numpy as np
+
+from node import Node
+
 
 def sigmoid(x):
 	return 1.0 / (1.0 + math.exp(-x))
 
+
 def softmax(vec):
-	return np.exp(vec)/np.sum(np.exp(vec), axis=0)
+	return np.exp(vec) / np.sum(np.exp(vec), axis=0)
+
 
 def euclidean(activations, weights):
 	return [math.pow(np.linalg.norm(activations - weights[:, j]), 2) for j in range(weights.shape[1])]
 
-class Layer():
 
+class Layer():
 	def __init__(self, function, input_size, output_size, output_layer=False):
 		self.function = function
 		self.input_size = input_size
@@ -40,15 +45,6 @@ class Layer():
 		else:
 			return activation_vector
 		"""
+
 	def get_out_weights(self, j):
 		return [n.weights[j] for n in self.nodes]
-
-
-
-
-
-
-
-
-
-
