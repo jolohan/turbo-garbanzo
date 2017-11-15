@@ -1,16 +1,18 @@
-from layer import Layer
-from data_manager import DataManager
 import math
 import numpy as np
 import random
 import dynamic_plot
+from data_manager import DataManager
+from layer import Layer
 
 
 def manhattan(x, y):
-    return abs(x[0] - y[0]) + abs(x[1] - y[1])
+	return abs(x[0] - y[0]) + abs(x[1] - y[1])
+
 
 def euclidean(vec_1, vec_2):
-    return math.pow(np.linalg.norm(vec_1 - vec_2), 2)
+	return math.sqrt(pow(vec_2[0]-vec_1[0],2) + pow(vec_2[1]-vec_1[1],2))
+
 
 class Network():
     def __init__(self, input_activation_func='euclidean', output_activation_func='euclidean',

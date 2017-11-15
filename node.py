@@ -1,8 +1,8 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 class Node():
-	
 	def __init__(self, output_size, output_layer=False, weight_interval=[0.0, 1.0]):
 		self.output_layer = output_layer
 		if not output_layer:
@@ -10,8 +10,6 @@ class Node():
 		else:
 			self.weights = []
 		self.activation = 0.0
-
-
 
 	# Handling Weights:
 	def init_weights(self, output_size, weight_interval):
