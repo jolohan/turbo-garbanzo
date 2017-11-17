@@ -1,5 +1,5 @@
 Problem TSP 2
-Epochs 1000
+Epochs 100
 LearningRate 0.2
 LearningDecay 100.0
 InitialNeighbourhood 15
