@@ -108,13 +108,12 @@ class Network():
 				city_nodes[index] = [city]
 			else:
 				city_nodes[index].append(city)
-				print(city_nodes[index])
 		# Reorder nodes after city-nodes:
 		tsp_order = []
 		for node_index in range(len(nodes)):
 			if node_index in city_nodes:
-				tsp_order.append(self.get_weights_to(node_index))
-				#tsp_order.append(city_nodes[node_index])
+				#tsp_order.append(self.get_weights_to(node_index))
+				tsp_order.append(city_nodes[node_index][0])
 
 		# Calculate the total distance:
 		tsp_distance = euclidean(tsp_order[0], tsp_order[-1])
