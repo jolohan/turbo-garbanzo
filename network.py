@@ -18,11 +18,14 @@ def euclidean(vec_1, vec_2):
 class Network():
 	def __init__(self, input_activation_func='euclidean', output_activation_func='euclidean',
 	             input_size=2, output_size=100, epochs=40, learning_rate=0.01, learning_decay=1.0,
-	             initial_neighborhood=20, neighborhood_decay=0.5, data_manager=None, node_multiplier=5):
+	             initial_neighborhood=20, neighborhood_decay=0.5, data_manager=None, node_multiplier=5,
+	             dimension=1, neighbor_function='1D'):
 		if data_manager == None:
 			self.data_manager = DataManager(1)
 		else:
 			self.data_manager = data_manager
+		self.dimension = dimension
+		self.neighbor_function = neighbor_function
 		self.input_size = self.data_manager.input_size
 		self.output_size = self.data_manager.output_size*node_multiplier
 		print(self.input_size, self.output_size)
@@ -65,21 +68,41 @@ class Network():
 		return self.input_layer.get_out_weights(j)
 
 	def get_weights(self):
-		return [self.input_layer.get_out_weights(j) for j in range(self.output_size)]
+		return [self.input_layer.get_out_weights(j, self.dimension) for j in range(self.output_size)]
 
-	def get_best_neighbors(self, index, t):
+	def get_best_neighbors(self, winning_index, t):
 		# Decay neighborhood size:
 		neighborhood_size = self.initial_neighborhood * math.exp(((-1.0 * t) / self.neighborhood_decay))
-		weights = self.get_weights()
+
 		T_matrix = []
 
-		# Compute the T matrix for neighbor updates:
-		for j in range(len(weights)):
-			d = abs(index - j)
-			distance = min(d, len(weights) - d)
-			T_matrix.append(self.compute_neighborhood(distance, neighborhood_size))
+		# Needs weights as either a 2D list, or a 1D list (of weights):
+		weights = self.get_weights()
+
+		# Sending this into the function for computing the neighborhood:
+		T_matrix = self.get_neighborhood(weights, winning_index, neighborhood_size)
+
 		sorted_matrix = sorted(((value, index) for index, value in enumerate(T_matrix)), reverse=False)
 		return sorted_matrix
+
+	def get_neighborhood(self, weights, winning_index, neighborhood_size):
+		T_matrix = []
+
+		# 1D SOM:
+		if (self.neighbor_function == "1D"):
+			# Compute the T matrix for neighbor updates:
+			for j in range(len(weights)):
+				d = abs(winning_index - j)
+				distance = min(d, len(weights) - d)
+				T_matrix.append(self.compute_neighborhood(distance, neighborhood_size))
+		# 2D SOM:
+		else:
+			for i in range(len(weights)):
+				for j in range(len(weights[i])):
+					distance = euclidean(weights[i][j], weights[winning_index[0]][winning_index[1]])
+					T_matrix.append(self.compute_neighborhood(distance, neighborhood_size))
+
+		return T_matrix
 
 	def compute_neighborhood(self, distance, size):
 		area = size ** 2
