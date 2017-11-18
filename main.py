@@ -82,11 +82,11 @@ class Interface():
 			network = Network(epochs=self.epochs, learning_rate=self.learning_rate,
 							  learning_decay=self.learning_decay, initial_neighborhood=self.initial_neighbourhood,
 							  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager)
-			display = Display(network)
-			fig = None
+			#display = Display(network)
+			#fig = None
 			while (network.epochs > 0):
 				network.train()
-				fig = display.plot_output_weights(fig)
+				#fig = display.plot_output_weights(fig)
 				input_text = "abc"
 				while (input_text != "STOP"):
 					input_text = input("How many more epochs do you want to train? 0 to quit. ")
