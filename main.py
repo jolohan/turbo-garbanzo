@@ -55,13 +55,13 @@ class Interface():
 		# Creating dictionary from all config files:
 		path = "config/"
 		config_dictionary = {}
-		index = 0
+		index = 1
 		for subdirs, dirs, files in os.walk(path):
 			for file in files:
 				if ('.txt' in file):
 					config_dictionary[index] = file
 					index += 1
-		config_dictionary[index] = 'Exit'
+		config_dictionary[0] = 'Exit'
 
 		finished = False
 

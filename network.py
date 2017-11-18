@@ -113,6 +113,7 @@ class Network():
 		city_nodes = {}
 		for city in self.input:
 			# Find the best node:
+			# Maybe try neighbouring nodes if best node already has a city
 			index, _ = self.run_once(city)
 			if index not in city_nodes:
 				city_nodes[index] = [city]
@@ -124,6 +125,8 @@ class Network():
 			if node_index in city_nodes:
 				#tsp_order.append(self.get_weights_to(node_index))
 				random_index = random.randrange(len(city_nodes[node_index]))
+				if (len(city_nodes[node_index]) > 1):
+					print("some nodes point to several citites")
 				tsp_order.append(city_nodes[node_index][random_index])
 
 		# Calculate the total distance:

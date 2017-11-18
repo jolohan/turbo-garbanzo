@@ -9,8 +9,7 @@ def plot_map(cities, nodes, iteration, filenumber, fig=None):
     plt.delaxes()
     #fig = fig if fig else plt.figure()
     #axes = fig.gca()
-    print("Length of nodes:", len(nodes))
-    print("Length of cities:", len(cities))
+
     plt.scatter(*zip(*cities), color='red', s=3)
     plt.scatter(*zip(*nodes), color='green', s=2)
 
