@@ -5,6 +5,7 @@ import numpy as np
 import dynamic_plot
 from data_manager import DataManager
 from layer import Layer
+import random
 
 
 def manhattan(x, y):
@@ -48,6 +49,8 @@ class Network():
 		test_sample = self.input[0]
 		PRINT_EVERY = 10
 		avg_loss = 0.0
+		old_distance = 9999999999.9
+		converge_flag = 0
 		for t in range(self.epochs):
 			train_index = np.random.choice(len(self.input), 1)[0]
 			train_sample = self.input[train_index]
@@ -61,6 +64,13 @@ class Network():
 				print("TSP Distance = " + str(current_distance))
 
 				dynamic_plot.plot_map(self.input, self.get_weights(), t, self.data_manager.file)
+				if (current_distance == old_distance):
+					converge_flag += 1
+				else:
+					converge_flag = 0
+				old_distance = current_distance
+				if converge_flag > 10:
+					break
 
 	def get_weights_to(self, j):
 		return self.input_layer.get_out_weights(j)
@@ -113,7 +123,8 @@ class Network():
 		for node_index in range(len(nodes)):
 			if node_index in city_nodes:
 				#tsp_order.append(self.get_weights_to(node_index))
-				tsp_order.append(city_nodes[node_index][0])
+				random_index = random.randrange(len(city_nodes[node_index]))
+				tsp_order.append(city_nodes[node_index][random_index])
 
 		# Calculate the total distance:
 		tsp_distance = euclidean(tsp_order[0], tsp_order[-1])
