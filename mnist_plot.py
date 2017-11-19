@@ -3,7 +3,7 @@ import os
 import math
 
 
-fig = plt.figure()
+plt.figure()
 
 #ax = fig.add_subplot(111)
 
@@ -40,7 +40,7 @@ def plot_winners(windexes, train):
     print("Plotting winning indexes...")
 
     fig2, ax = plt.subplots()
-    colors = ['lightgreen', 'pink', 'magenta', 'blue', 'purple', 'orange', 'red', 'yellow', 'indigo', 'azure']
+    colors = ['lightgreen', 'pink', 'magenta', 'blue', 'purple', 'orange', 'red', 'yellow', 'indigo', 'black']
     for index, label in windexes:
         color = colors[int(label)]
         size = 20
@@ -66,7 +66,7 @@ def plot_labels(nodes, iteration):
 
     plt.ion()
     plt.delaxes()
-    colors = ['lightgreen', 'pink', 'magenta', 'blue', 'purple', 'orange', 'red', 'yellow', 'indigo', 'azure']
+    colors = ['green', 'pink', 'magenta', 'blue', 'purple', 'orange', 'red', 'yellow', 'indigo', 'black']
     for i in range(len(nodes)):
         for j in range(len(nodes[i])):
             lab = int(nodes[i][j].label - 1)
@@ -77,11 +77,10 @@ def plot_labels(nodes, iteration):
                 color = 'black'
                 marker = 'x'
             size = 20
-            plt.scatter(i, j, color=color, s=size, marker=marker, alpha=0.5)
+            plt.scatter(i, j, color=color, s=size, marker=marker, alpha=0.9)
             #ax.annotate(str(lab), (i, j))
 
     plt.title('Iteration #{:06d}'.format(iteration))
-    plt.legend(loc=1)
     directory = 'plots/mnist/'
     if (not os.path.exists(directory)):
         os.makedirs(directory)

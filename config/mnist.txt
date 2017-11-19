@@ -1,8 +1,9 @@
 Problem MNIST 500 100
-Epochs 1200
+Epochs 1500
 LearningRate 0.4
 LearningDecay 1000.0
 InitialNeighbourhood 50
 NeighbourhoodDecay 200.0
 NodeMultiplier 1
 LearningRateConstant 0.0
+Size 18

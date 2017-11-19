@@ -80,7 +80,7 @@ class Interface():
 				self.data_manager = DataManager(self.problem_number)
 				self.dimension = 1
 			else:
-				self.data_manager = MNIST(self.size, self.test_size)
+				self.data_manager = MNIST(self.size, self.test_size, self.out_size)
 				self.dimension = 2
 
 			network = Network(epochs=self.epochs, learning_rate=self.learning_rate,
@@ -105,6 +105,9 @@ class Interface():
 						network.epochs = network.epochs + int(input_text)
 						input_text = "STOP"
 					except:
+						if (input_text.lower() == "q" or input_text == "0"):
+							network.epochs = 0
+							break
 						print("Fail. Enter a number")
 
 			done = input("Exit = 0, continue = 1: ")
@@ -136,6 +139,7 @@ class Interface():
 		else:
 			self.size = float(network_dict['Problem'][1])
 			self.test_size = float(network_dict['Problem'][2])
+			self.out_size = int(network_dict['Size'][0])
 
 		# 1. Epochs (Total number of MINIBATCHES during training)
 		self.epochs = int(network_dict['Epochs'][0])
@@ -157,6 +161,7 @@ class Interface():
 
 		# 7. Node Multiplier
 		self.node_multiplier = int(network_dict['NodeMultiplier'][0])
+		
 
 
 if __name__ == '__main__':

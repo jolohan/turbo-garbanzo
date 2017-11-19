@@ -6,7 +6,7 @@ import math
 class MNIST():
 	filename = "MNIST/all_flat_mnist_training_cases_text.txt"
 
-	def __init__(self, size, test_size):
+	def __init__(self, size, test_size, output_size):
 		self.img_labels, self.images = read_file(self.filename)
 		to_sort = list(zip(self.images, self.img_labels))
 		random.shuffle(to_sort)
@@ -18,7 +18,8 @@ class MNIST():
 		print("size = " + str(len(self.test_input)))
 		self.norm_constant = self.normalize()
 		
-		self.output_size = int(math.sqrt(len(self.input[0])))
+		#self.output_size = int(math.sqrt(len(self.input[0])))
+		self.output_size = output_size
 		self.input_size = len(self.input[0])
 		self.file = "MNIST"
 

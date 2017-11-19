@@ -31,7 +31,7 @@ class Network():
 		self.input_size = self.data_manager.input_size
 		self.output_size = self.data_manager.output_size*node_multiplier
 		print(self.input_size, self.output_size)
-
+		self.mnist_fig = None
 		# Data:
 		self.input = self.data_manager.input
 		if (dimension == 2):
@@ -44,7 +44,7 @@ class Network():
 		if (self.dimension == 1):
 			self.initial_neighborhood = int(self.output_size*0.1)
 		else:
-			self.initial_neighborhood = int(self.output_size*self.output_size*0.05)
+			self.initial_neighborhood = int(self.output_size*self.output_size*0.1)
 		print("Initial Neighborhood size = " + str(self.initial_neighborhood))
 		self.learning_decay = learning_decay
 		self.learning_rate_constant = learning_rate_constant
@@ -103,9 +103,8 @@ class Network():
 				if (self.dimension == 1):
 					dynamic_plot.plot_map(self.input, self.get_weights(), t, self.data_manager.file)
 				else:
-					#mnist_plot.plot(self.forward(test_sample), t)
-					pass
-					#mnist_plot.plot_labels(self.node_layer.nodes, t)
+					if (t >= FIRST):
+						mnist_plot.plot_labels(self.node_layer.nodes, t)
 			if (t > 0 and t % PRINT_EVERY == 0):
 				print("\nTraining Epoch " + str(t) + "/" + str(self.epochs))
 				print("Avg Loss = " + str(avg_loss / t))
