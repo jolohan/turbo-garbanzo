@@ -40,7 +40,11 @@ class Network():
 		self.epochs = epochs
 		self.similarity = 0.5
 		self.initial_learning_rate = learning_rate
-		self.initial_neighborhood = int(self.output_size*0.1)
+		if (self.dimension == 1):
+			self.initial_neighborhood = int(self.output_size*0.1)
+		else:
+			self.initial_neighborhood = int(self.output_size*self.output_size*0.05)
+		print("Initial Neighborhood size = " + str(self.initial_neighborhood))
 		self.learning_decay = learning_decay
 		self.neighborhood_decay = neighborhood_decay
 
@@ -63,25 +67,43 @@ class Network():
 			#print("index = " + str(index) + ", First = " + str(first) + ", second = " + str(second))
 			return (first, second), activations[first][second]
 
+	def classify(self):
+		print("Classifying nodes...")
+		for image, label in zip(self.input, self.labels):
+			winning_index, _ = self.run_once(image)
+			self.node_layer.nodes[winning_index[0]][winning_index[1]].class_labels[label + 1] += 1
+
+		for n_list in self.node_layer.nodes:
+			for n in n_list:
+				n.label = np.argmax(n.class_labels)
+
 	def train(self):
 		print("Starting training on " + str(len(self.input)) + " samples.")
 		PLOT_EVERY = 10
 		PRINT_EVERY = 10
+		CLASSIFY_EVERY = 40
+		FIRST = 100
 		avg_loss = 0.0
-		self.test("train")
 		old_distance = 9999999999.9
 		converge_flag = 0
+		test_sample = self.input[0]
 		for t in range(self.epochs):
 			train_index = np.random.choice(len(self.input), 1)[0]
 			train_sample = self.input[train_index]
+			#print("Image: ", train_sample)
 			winning_index, loss = self.run_once(train_sample)
+
 			self.optimize_network(winning_index, train_sample, t)
 			avg_loss += loss
+			if (t >= FIRST and t % CLASSIFY_EVERY == 0 and self.dimension == 2):
+				self.test("test", False)
 			if (t % PLOT_EVERY == 0):
 				if (self.dimension == 1):
 					dynamic_plot.plot_map(self.input, self.get_weights(), t, self.data_manager.file)
 				else:
-					mnist_plot.plot(self.forward(train_sample), self.get_weights(), t)
+					#mnist_plot.plot(self.forward(test_sample), t)
+					pass
+					#mnist_plot.plot_labels(self.node_layer.nodes, t)
 			if (t > 0 and t % PRINT_EVERY == 0):
 				print("\nTraining Epoch " + str(t) + "/" + str(self.epochs))
 				print("Avg Loss = " + str(avg_loss / t))
@@ -98,23 +120,37 @@ class Network():
 						break
 
 	# Required method for testing on both the training set and test set:
-	def test(self, dataset):
+	def test(self, dataset, plot):
+		self.classify()
 		tr = False
 		if (dataset == "train"):
+			print("\n--- Training Set Test ---\n")
 			data = self.input
 			labels = self.labels
 			tr = True
 		else:
+			print("\n--- Test Set Test ---\n")
 			data = self.data_manager.test_input
 			labels = self.data_manager.test_labels
 
 		windexes = []
+		correct = 0
+		total = 0
+		not_class = 0
 		for image, label in zip(data, labels):
 			winning_index, _ = self.run_once(image)
+			node_guess = int(self.node_layer.nodes[winning_index[0]][winning_index[1]].label)
+			if node_guess == 0:
+				not_class += 1
+				continue
+			total += 1
+			if (node_guess - 1 == label):
+				correct += 1
 			windexes.append([winning_index, label])
-
-		mnist_plot.plot_winners(windexes, tr)
-
+		print("\nPercentage correct classifications = " + str(float(100.0*correct/max(1, total))) + " %")
+		print("\nPercentage not classified = " + str(float(100.0*not_class/max(1, not_class +  total))) + " %")
+		if (plot):
+			mnist_plot.plot_winners(windexes, tr)
 
 
 	def get_weights_to(self, i, j=None):
@@ -142,11 +178,13 @@ class Network():
 				self.node_layer.weights[j] += learning_rate * self.compute_neighborhood(distance, neighborhood_size) * (input_values - self.node_layer.weights[j])
 		# 2D SOM:
 		else:
+			ds = []
 			for i in range(len(weights)):
+				ds.append([])
 				for j in range(len(weights[i])):
 					distance = euclidean([i, j], winning_index)
+					ds[i].append(int(distance))
 					self.node_layer.weights[i][j] += learning_rate * self.compute_neighborhood(distance, neighborhood_size) * (input_values - self.node_layer.weights[i][j])
-		
 
 	def compute_neighborhood(self, distance, size):
 		area = size ** 2

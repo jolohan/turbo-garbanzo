@@ -3,18 +3,25 @@ import os
 import math
 
 
-plt.figure()
+fig = plt.figure()
 
-def plot(activation_values, nodes, iteration):
+#ax = fig.add_subplot(111)
 
+def plot(activation_values, iteration):
 
-    colors = ['lightgreen', 'green', 'magenta', 'blue', 'purple', 'orange', 'red']
-    colors.reverse()
+    plt.ion()
+    plt.delaxes()
+
+    scatter_colors = ['lightgreen', 'green', 'aqua', 'blue', 'magenta', 'purple', 'yellow', 'orange', 'red']
+    scatter_colors.reverse()
     top = max(activation_values)
     top = max(top)
-    for i in range(len(nodes)):
-        for j in range(len(nodes[i])):
-            color = colors[int(float(activation_values[i][j]/top)*(len(colors)-1))]
+    for i in range(len(activation_values)):
+        for j in range(len(activation_values[i])):
+            index = min(math.floor(float(activation_values[i][j]/top)*(len(scatter_colors) - 1)), len(scatter_colors) - 1)
+            if (index <= 0 or index >= len(scatter_colors)):
+                print("Color index = " + str(index) + "/" + str(len(scatter_colors) - 1))
+            color = scatter_colors[index]
             size = math.exp(-activation_values[i][j]/top)
             plt.scatter(i, j, color=color, s=10*size)
 
@@ -24,14 +31,15 @@ def plot(activation_values, nodes, iteration):
     if (not os.path.exists(directory)):
         os.makedirs(directory)
     plt.savefig(directory + '{}.png'.format(iteration))
-    plt.clf()
+    plt.draw()
+    plt.pause(0.01)
 
 
 
 def plot_winners(windexes, train):
     print("Plotting winning indexes...")
 
-    fig, ax = plt.subplots()
+    fig2, ax = plt.subplots()
     colors = ['lightgreen', 'pink', 'magenta', 'blue', 'purple', 'orange', 'red', 'yellow', 'indigo', 'azure']
     for index, label in windexes:
         color = colors[int(label)]
@@ -54,3 +62,29 @@ def plot_winners(windexes, train):
     plt.savefig(directory + filename + '.png')
     plt.clf()
 
+def plot_labels(nodes, iteration):
+
+    plt.ion()
+    plt.delaxes()
+    colors = ['lightgreen', 'pink', 'magenta', 'blue', 'purple', 'orange', 'red', 'yellow', 'indigo', 'azure']
+    for i in range(len(nodes)):
+        for j in range(len(nodes[i])):
+            lab = int(nodes[i][j].label - 1)
+            if (lab >= 0):
+                color = colors[lab]
+                marker = 'o'
+            else:
+                color = 'black'
+                marker = 'x'
+            size = 20
+            plt.scatter(i, j, color=color, s=size, marker=marker, alpha=0.5)
+            #ax.annotate(str(lab), (i, j))
+
+    plt.title('Iteration #{:06d}'.format(iteration))
+    plt.legend(loc=1)
+    directory = 'plots/mnist/'
+    if (not os.path.exists(directory)):
+        os.makedirs(directory)
+    plt.savefig(directory + '{}.png'.format(iteration))
+    plt.draw()
+    plt.pause(0.01)

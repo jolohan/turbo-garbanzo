@@ -96,8 +96,8 @@ class Interface():
 				if (self.dimension == 1):
 					fig = display.plot_output_weights(fig)
 				else:
-					network.test("train")
-					network.test("test")
+					network.test("train", True)
+					network.test("test", True)
 				input_text = "abc"
 				while (input_text != "STOP"):
 					input_text = input("How many more epochs do you want to train? 0 to quit. ")
