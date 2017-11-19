@@ -26,6 +26,7 @@ class Network():
 			self.data_manager = DataManager(1)
 		else:
 			self.data_manager = data_manager
+		self.start_epoch = 0
 		self.dimension = dimension
 		self.input_size = self.data_manager.input_size
 		self.output_size = self.data_manager.output_size*node_multiplier
@@ -80,15 +81,15 @@ class Network():
 
 	def train(self):
 		print("Starting training on " + str(len(self.input)) + " samples.")
-		PLOT_EVERY = 10
-		PRINT_EVERY = 10
+		PLOT_EVERY = 50
+		PRINT_EVERY = 50
 		CLASSIFY_EVERY = 40
 		FIRST = 100
 		avg_loss = 0.0
 		old_distance = 9999999999.9
 		converge_flag = 0
 		test_sample = self.input[0]
-		for t in range(self.epochs):
+		for t in range(self.start_epoch, self.epochs):
 			train_index = np.random.choice(len(self.input), 1)[0]
 			train_sample = self.input[train_index]
 			#print("Image: ", train_sample)
@@ -218,8 +219,10 @@ class Network():
 			if node_index in city_nodes:
 				#tsp_order.append(self.get_weights_to(node_index))
 				random_index = random.randrange(len(city_nodes[node_index]))
+				"""
 				if (len(city_nodes[node_index]) > 1):
 					print("some nodes point to several citites")
+				"""
 				tsp_order.append(city_nodes[node_index][random_index])
 
 		# Calculate the total distance:
