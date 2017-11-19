@@ -66,7 +66,7 @@ class Interface():
 		finished = False
 
 		while not finished:
-			for key in config_dictionary.keys():
+			for key in sorted(config_dictionary.keys()):
 				print(str(key) + ": ", config_dictionary[key])
 
 			config = input("\nWhich config to run [0/" + str(len(config_dictionary)-1) + "]: ")
@@ -81,7 +81,8 @@ class Interface():
 
 			network = Network(epochs=self.epochs, learning_rate=self.learning_rate,
 							  learning_decay=self.learning_decay, initial_neighborhood=self.initial_neighbourhood,
-							  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager)
+							  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager,
+			                  learning_rate_constant=self.learning_rate_constant)
 			#display = Display(network)
 			#fig = None
 			while (network.epochs > 0):
@@ -137,6 +138,9 @@ class Interface():
 
 		# 5. Neighbourhood decay
 		self.neighbourhood_decay = float(network_dict['NeighbourhoodDecay'][0])
+
+		# 6. Learning Rate Constant
+		self.learning_rate_constant = float(network_dict['LearningRateConstant'][0])
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-Problem TSP 7
+Problem TSP 9
 Epochs 2000
 LearningRate 0.7
 LearningDecay 1000.0

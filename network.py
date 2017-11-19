@@ -19,7 +19,8 @@ def euclidean(vec_1, vec_2):
 class Network():
 	def __init__(self, input_activation_func='euclidean', output_activation_func='euclidean',
 	             input_size=2, output_size=100, epochs=40, learning_rate=0.01, learning_decay=1.0,
-	             initial_neighborhood=20, neighborhood_decay=0.5, data_manager=None, node_multiplier=5):
+	             initial_neighborhood=20, neighborhood_decay=0.5, data_manager=None, node_multiplier=5,
+	             learning_rate_constant = 0.0):
 		if data_manager == None:
 			self.data_manager = DataManager(1)
 		else:
@@ -33,6 +34,7 @@ class Network():
 		self.initial_learning_rate = learning_rate
 		self.initial_neighborhood = int(self.output_size*0.1)
 		self.learning_decay = learning_decay
+		self.learning_rate_constant = learning_rate_constant
 		self.neighborhood_decay = neighborhood_decay
 		self.input_layer = Layer(input_activation_func, self.input_size, self.output_size)
 		self.output_layer = Layer(output_activation_func, self.output_size, output_size=0, output_layer=True)
@@ -70,7 +72,11 @@ class Network():
 					converge_flag = 0
 				old_distance = current_distance
 				if converge_flag > 10:
-					break
+					quit = input("Do you want to quit training? Press 'Q'")
+					if quit.lower() == 'q':
+						break
+					else:
+						converge_flag = -20
 
 	def get_weights_to(self, j):
 		return self.input_layer.get_out_weights(j)
@@ -101,6 +107,8 @@ class Network():
 	def optimize_network(self, j, input_values, t):
 		# Decay Learning rate:
 		learning_rate = self.initial_learning_rate * math.exp(((-1.0 * t) / self.learning_decay))
+		learning_rate = learning_rate + self.learning_rate_constant
+		#print("Learning rate: ",learning_rate)
 		neighbors = self.get_best_neighbors(j, t)
 
 		# Update all Neighbors:
