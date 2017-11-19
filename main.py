@@ -11,7 +11,7 @@ class Display():
 		self.network = network
 		plt.ion()
 
-	def plot_output_weights(self, fig=None, title='tits'):
+	def plot_output_weights(self, fig=None, title='TSP_solution'):
 		weights = self.network.get_weights()
 		weights = np.array(weights)
 		cities = self.network.data_manager.input
@@ -37,8 +37,6 @@ class Display():
 		plt.scatter(a, b, c="red", alpha=0.5, marker='o', label="City")
 		plt.pause(0.001)
 
-		plt.xlabel("Leprechauns")
-		plt.ylabel("Gold")
 		plt.legend(loc=2)
 		axes.autoscale_view()
 		plt.draw()
@@ -91,6 +89,7 @@ class Interface():
 			                  learning_rate_constant=self.learning_rate_constant, node_multiplier=self.node_multiplier,
 			                  dimension = self.dimension)
 			display = Display(network)
+			fig = None
 			while (network.epochs > 0):
 				network.train()
 				if (self.dimension == 1):
@@ -102,7 +101,8 @@ class Interface():
 				while (input_text != "STOP"):
 					input_text = input("How many more epochs do you want to train? 0 to quit. ")
 					try:
-						network.epochs = (int)(input_text)
+						network.start_epoch = network.epochs
+						network.epochs = network.epochs + int(input_text)
 						input_text = "STOP"
 					except:
 						print("Fail. Enter a number")
