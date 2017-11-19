@@ -1,6 +1,7 @@
 Problem TSP 2
 Epochs 2000
-LearningRate 0.7
+LearningRate 0.5
 LearningDecay 1000.0
 InitialNeighbourhood 15
 NeighbourhoodDecay 200.0
+LearningRateConstant 0.2

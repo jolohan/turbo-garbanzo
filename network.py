@@ -20,8 +20,8 @@ def euclidean(vec_1, vec_2):
 class Network():
 	def __init__(self, input_activation_func='euclidean', output_activation_func='euclidean',
 	             input_size=2, output_size=100, epochs=40, learning_rate=0.01, learning_decay=1.0,
-	             initial_neighborhood=20, neighborhood_decay=0.5, data_manager=None, node_multiplier=1,
-	             dimension=1):
+	             initial_neighborhood=20, neighborhood_decay=0.5, data_manager=None, node_multiplier=5,
+	             dimension=1, learning_rate_constant = 0.0):
 		if data_manager == None:
 			self.data_manager = DataManager(1)
 		else:
@@ -46,6 +46,7 @@ class Network():
 			self.initial_neighborhood = int(self.output_size*self.output_size*0.05)
 		print("Initial Neighborhood size = " + str(self.initial_neighborhood))
 		self.learning_decay = learning_decay
+		self.learning_rate_constant = learning_rate_constant
 		self.neighborhood_decay = neighborhood_decay
 
 		# Need only 1 layer!
@@ -132,7 +133,6 @@ class Network():
 			print("\n--- Test Set Test ---\n")
 			data = self.data_manager.test_input
 			labels = self.data_manager.test_labels
-
 		windexes = []
 		correct = 0
 		total = 0
@@ -195,6 +195,9 @@ class Network():
 	def optimize_network(self, j, input_values, t):
 		# Decay Learning rate:
 		learning_rate = self.initial_learning_rate * math.exp(((-1.0 * t) / self.learning_decay))
+		learning_rate = learning_rate + self.learning_rate_constant
+		#print("Learning rate: ",learning_rate)
+		#neighbors = self.get_best_neighbors(j, t)
 		self.update_neighbors(j, t, learning_rate, input_values)
 
 

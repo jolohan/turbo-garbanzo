@@ -16,7 +16,7 @@ def plot_map(cities, nodes, iteration, filenumber, fig=None):
     plt.plot(*zip(*(nodes+[nodes[0]])), color='darkgreen')
 
     #plt.gca().invert_xaxis()
-    plt.gca().set_aspect('equal', adjustable='datalim')
+    #plt.gca().set_aspect('equal', adjustable='datalim')
 
     plt.title('Iteration #{:06d}'.format(iteration))
     #plt.axis('off')
