@@ -219,7 +219,7 @@ class Network():
 				#tsp_order.append(self.get_weights_to(node_index))
 				random_index = random.randrange(len(city_nodes[node_index]))
 				if (len(city_nodes[node_index]) > 1):
-					print("some nodes point to several citites")
+					#print("some nodes point to several citites")
 				tsp_order.append(city_nodes[node_index][random_index])
 
 		# Calculate the total distance:
