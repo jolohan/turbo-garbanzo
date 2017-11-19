@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from data_manager import DataManager
+from mnist_manager import MNIST
 from network import Network
 import os
 
@@ -76,16 +77,26 @@ class Interface():
 				break
 		
 			self.load_config(filename=path + config_dictionary[config_nr])
-			self.data_manager = DataManager(self.problem_number)
+			if (self.problem_type == "TSP"):
+				self.data_manager = DataManager(self.problem_number)
+				self.dimension = 1
+			else:
+				self.data_manager = MNIST(self.size, self.test_size)
+				self.dimension = 2
 
 			network = Network(epochs=self.epochs, learning_rate=self.learning_rate,
 							  learning_decay=self.learning_decay, initial_neighborhood=self.initial_neighbourhood,
-							  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager)
-			display = Display(network)
-			fig = None
+							  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager, dimension=self.dimension)
+			if (self.dimension == 1):
+				display = Display(network)
+				fig = None
 			while (network.epochs > 0):
 				network.train()
-				fig = display.plot_output_weights(fig)
+				if (self.dimension == 1):
+					fig = display.plot_output_weights(fig)
+				else:
+					network.test("train")
+					network.test("test")
 				input_text = "abc"
 				while (input_text != "STOP"):
 					input_text = input("How many more epochs do you want to train? 0 to quit. ")
@@ -121,6 +132,9 @@ class Interface():
 
 		if (self.problem_type == 'TSP'):
 			self.problem_number = network_dict['Problem'][1]
+		else:
+			self.size = float(network_dict['Problem'][1])
+			self.test_size = float(network_dict['Problem'][2])
 
 		# 1. Epochs (Total number of MINIBATCHES during training)
 		self.epochs = int(network_dict['Epochs'][0])
