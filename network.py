@@ -5,6 +5,7 @@ import numpy as np
 import dynamic_plot
 from data_manager import DataManager
 from layer import Layer
+import mnist_plot
 import random
 
 
@@ -20,15 +21,22 @@ class Network():
 	def __init__(self, input_activation_func='euclidean', output_activation_func='euclidean',
 	             input_size=2, output_size=100, epochs=40, learning_rate=0.01, learning_decay=1.0,
 	             initial_neighborhood=20, neighborhood_decay=0.5, data_manager=None, node_multiplier=5,
-	             learning_rate_constant = 0.0):
+	             dimension=1, learning_rate_constant = 0.0):
 		if data_manager == None:
 			self.data_manager = DataManager(1)
 		else:
 			self.data_manager = data_manager
+		self.dimension = dimension
 		self.input_size = self.data_manager.input_size
 		self.output_size = self.data_manager.output_size*node_multiplier
 		print(self.input_size, self.output_size)
+
+		# Data:
 		self.input = self.data_manager.input
+		if (dimension == 2):
+			self.labels = self.data_manager.labels
+
+		# Parameters:
 		self.epochs = epochs
 		self.similarity = 0.5
 		self.initial_learning_rate = learning_rate
@@ -36,21 +44,32 @@ class Network():
 		self.learning_decay = learning_decay
 		self.learning_rate_constant = learning_rate_constant
 		self.neighborhood_decay = neighborhood_decay
-		self.input_layer = Layer(input_activation_func, self.input_size, self.output_size)
-		self.output_layer = Layer(output_activation_func, self.output_size, output_size=0, output_layer=True)
+
+		# Need only 1 layer!
+		self.node_layer = Layer(output_activation_func, self.input_size, self.output_size, dimension=dimension)
 
 	def forward(self, input):
-		output = self.input_layer.compute_activation_vector(input)
+		output = self.node_layer.compute_activation_vector(input)
 		return output
 
 	def run_once(self, input):
 		activations = self.forward(input)
-		return np.argmin(activations), activations[np.argmin(activations)]
+		if (self.dimension == 1):
+			return np.argmin(activations), activations[np.argmin(activations)]
+		else:
+			index = np.argmin(activations)
+			first = index//len(activations)
+			second = index % len(activations)
+			
+			#print("index = " + str(index) + ", First = " + str(first) + ", second = " + str(second))
+			return (first, second), activations[first][second]
 
 	def train(self):
-		test_sample = self.input[0]
+		print("Starting training on " + str(len(self.input)) + " samples.")
+		PLOT_EVERY = 10
 		PRINT_EVERY = 10
 		avg_loss = 0.0
+		self.test("train")
 		old_distance = 9999999999.9
 		converge_flag = 0
 		for t in range(self.epochs):
@@ -59,44 +78,75 @@ class Network():
 			winning_index, loss = self.run_once(train_sample)
 			self.optimize_network(winning_index, train_sample, t)
 			avg_loss += loss
-			if (t > 0 and t % PRINT_EVERY == 0):
-				print("\nTraining Epoch " + str(t))
-				print("Avg Loss = " + str(avg_loss / t))
-				current_distance = self.calculate_tsp_distance()
-				print("TSP Distance = " + str(current_distance))
-
-				dynamic_plot.plot_map(self.input, self.get_weights(), t, self.data_manager.file)
-				if (current_distance == old_distance):
-					converge_flag += 1
+			if (t % PLOT_EVERY == 0):
+				if (self.dimension == 1):
+					dynamic_plot.plot_map(self.input, self.get_weights(), t, self.data_manager.file)
 				else:
-					converge_flag = 0
-				old_distance = current_distance
-				if converge_flag > 10:
-					quit = input("Do you want to quit training? Press 'Q'")
-					if quit.lower() == 'q':
-						break
+					mnist_plot.plot(self.forward(train_sample), self.get_weights(), t)
+			if (t > 0 and t % PRINT_EVERY == 0):
+				print("\nTraining Epoch " + str(t) + "/" + str(self.epochs))
+				print("Avg Loss = " + str(avg_loss / t))
+				if (self.dimension == 1):
+					current_distance = self.calculate_tsp_distance()
+					print("TSP Distance = " + str(current_distance))
+					dynamic_plot.plot_map(self.input, self.get_weights(), t, self.data_manager.file)
+					if (current_distance == old_distance):
+						converge_flag += 1
 					else:
-						converge_flag = -20
+						converge_flag = 0
+					old_distance = current_distance
+					if converge_flag > 10:
+						break
 
-	def get_weights_to(self, j):
-		return self.input_layer.get_out_weights(j)
+	# Required method for testing on both the training set and test set:
+	def test(self, dataset):
+		tr = False
+		if (dataset == "train"):
+			data = self.input
+			labels = self.labels
+			tr = True
+		else:
+			data = self.data_manager.test_input
+			labels = self.data_manager.test_labels
+		windexes = []
+		for image, label in zip(data, labels):
+			winning_index, _ = self.run_once(image)
+			windexes.append([winning_index, label])
+
+		mnist_plot.plot_winners(windexes, tr)
+
+
+
+	def get_weights_to(self, i, j=None):
+		if (self.dimension == 1):
+			return self.node_layer.weights[i]
+		else:
+			return self.node_layer.weights[i][j]
 
 	def get_weights(self):
-		return [self.input_layer.get_out_weights(j) for j in range(self.output_size)]
+		return self.node_layer.weights
 
-	def get_best_neighbors(self, index, t):
+	def update_neighbors(self, winning_index, t, learning_rate, input_values):
 		# Decay neighborhood size:
 		neighborhood_size = self.initial_neighborhood * math.exp(((-1.0 * t) / self.neighborhood_decay))
-		weights = self.get_weights()
-		T_matrix = []
 
-		# Compute the T matrix for neighbor updates:
-		for j in range(len(weights)):
-			d = abs(index - j)
-			distance = min(d, len(weights) - d)
-			T_matrix.append(self.compute_neighborhood(distance, neighborhood_size))
-		sorted_matrix = sorted(((value, index) for index, value in enumerate(T_matrix)), reverse=False)
-		return sorted_matrix
+		# Needs weights as either a 2D list, or a 1D list (of weights):
+		weights = self.get_weights()
+
+		# 1D SOM:
+		if (self.dimension == 1):
+			# Compute the T matrix for neighbor updates:
+			for j in range(len(weights)):
+				d = abs(winning_index - j)
+				distance = min(d, len(weights) - d)
+				self.node_layer.weights[j] += learning_rate * self.compute_neighborhood(distance, neighborhood_size) * (input_values - self.node_layer.weights[j])
+		# 2D SOM:
+		else:
+			for i in range(len(weights)):
+				for j in range(len(weights[i])):
+					distance = euclidean([i, j], winning_index)
+					self.node_layer.weights[i][j] += learning_rate * self.compute_neighborhood(distance, neighborhood_size) * (input_values - self.node_layer.weights[i][j])
+		
 
 	def compute_neighborhood(self, distance, size):
 		area = size ** 2
@@ -109,15 +159,12 @@ class Network():
 		learning_rate = self.initial_learning_rate * math.exp(((-1.0 * t) / self.learning_decay))
 		learning_rate = learning_rate + self.learning_rate_constant
 		#print("Learning rate: ",learning_rate)
-		neighbors = self.get_best_neighbors(j, t)
+		#neighbors = self.get_best_neighbors(j, t)
+		self.update_neighbors(j, t, learning_rate, input_values)
 
-		# Update all Neighbors:
-		for t_val, k in neighbors:
-			for i, n in enumerate(self.input_layer.nodes):
-				n.weights[k] += learning_rate * t_val * (input_values[i] - n.weights[k])
 
 	def calculate_tsp_distance(self):
-		nodes = self.output_layer.nodes
+		nodes = self.node_layer.nodes
 		city_nodes = {}
 		for city in self.input:
 			# Find the best node:
