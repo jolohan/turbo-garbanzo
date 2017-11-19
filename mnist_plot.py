@@ -5,37 +5,6 @@ import math
 
 plt.figure()
 
-#ax = fig.add_subplot(111)
-
-def plot(activation_values, iteration):
-
-    plt.ion()
-    plt.delaxes()
-
-    scatter_colors = ['lightgreen', 'green', 'aqua', 'blue', 'magenta', 'purple', 'yellow', 'orange', 'red']
-    scatter_colors.reverse()
-    top = max(activation_values)
-    top = max(top)
-    for i in range(len(activation_values)):
-        for j in range(len(activation_values[i])):
-            index = min(math.floor(float(activation_values[i][j]/top)*(len(scatter_colors) - 1)), len(scatter_colors) - 1)
-            if (index <= 0 or index >= len(scatter_colors)):
-                print("Color index = " + str(index) + "/" + str(len(scatter_colors) - 1))
-            color = scatter_colors[index]
-            size = math.exp(-activation_values[i][j]/top)
-            plt.scatter(i, j, color=color, s=10*size)
-
-    plt.title('Iteration #{:06d}'.format(iteration))
-    plt.axis('off')
-    directory = 'plots/mnist/'
-    if (not os.path.exists(directory)):
-        os.makedirs(directory)
-    plt.savefig(directory + '{}.png'.format(iteration))
-    plt.draw()
-    plt.pause(0.01)
-
-
-
 def plot_winners(windexes, train):
     print("Plotting winning indexes...")
 
