@@ -1,0 +1,6 @@
+Problem TSP 4
+Epochs 2000
+LearningRate 0.7
+LearningDecay 1000.0
+InitialNeighbourhood 15
+NeighbourhoodDecay 200.0

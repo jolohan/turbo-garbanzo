@@ -6,6 +6,7 @@ import dynamic_plot
 from data_manager import DataManager
 from layer import Layer
 import mnist_plot
+import random
 
 
 def manhattan(x, y):
@@ -68,6 +69,8 @@ class Network():
 		PRINT_EVERY = 10
 		avg_loss = 0.0
 		self.test("train")
+		old_distance = 9999999999.9
+		converge_flag = 0
 		for t in range(self.epochs):
 			train_index = np.random.choice(len(self.input), 1)[0]
 			train_sample = self.input[train_index]
@@ -82,9 +85,19 @@ class Network():
 			if (t > 0 and t % PRINT_EVERY == 0):
 				print("\nTraining Epoch " + str(t) + "/" + str(self.epochs))
 				print("Avg Loss = " + str(avg_loss / t))
-				#current_distance = self.calculate_tsp_distance()
-				#print("TSP Distance = " + str(current_distance))
+				if (self.dimension == 1):
+					current_distance = self.calculate_tsp_distance()
+					print("TSP Distance = " + str(current_distance))
+					dynamic_plot.plot_map(self.input, self.get_weights(), t, self.data_manager.file)
+					if (current_distance == old_distance):
+						converge_flag += 1
+					else:
+						converge_flag = 0
+					old_distance = current_distance
+					if converge_flag > 10:
+						break
 
+	# Required method for testing on both the training set and test set:
 	def test(self, dataset):
 		tr = False
 		if (dataset == "train"):
@@ -152,17 +165,21 @@ class Network():
 		city_nodes = {}
 		for city in self.input:
 			# Find the best node:
+			# Maybe try neighbouring nodes if best node already has a city
 			index, _ = self.run_once(city)
 			if index not in city_nodes:
 				city_nodes[index] = [city]
 			else:
 				city_nodes[index].append(city)
-
 		# Reorder nodes after city-nodes:
 		tsp_order = []
 		for node_index in range(len(nodes)):
 			if node_index in city_nodes:
-				tsp_order.append(self.get_weights_to(node_index))
+				#tsp_order.append(self.get_weights_to(node_index))
+				random_index = random.randrange(len(city_nodes[node_index]))
+				if (len(city_nodes[node_index]) > 1):
+					print("some nodes point to several citites")
+				tsp_order.append(city_nodes[node_index][random_index])
 
 		# Calculate the total distance:
 		tsp_distance = euclidean(tsp_order[0], tsp_order[-1])

@@ -50,18 +50,19 @@ class Display():
 class Interface():
 
 	def __init__(self, config_file='config/TSP_config.txt'):
+
 		print("\n--- SOM Module Interface ---\n")
 
 		# Creating dictionary from all config files:
 		path = "config/"
 		config_dictionary = {}
-		index = 0
+		index = 1
 		for subdirs, dirs, files in os.walk(path):
 			for file in files:
 				if ('.txt' in file):
 					config_dictionary[index] = file
 					index += 1
-		config_dictionary[index] = 'Exit'
+		config_dictionary[0] = 'Exit'
 
 		finished = False
 
@@ -72,7 +73,7 @@ class Interface():
 			config = input("\nWhich config to run [0/" + str(len(config_dictionary)-1) + "]: ")
 			config_nr = int(config)
 
-			if (config_nr == index):
+			if (config_nr == 0):
 				finished = True
 				break
 		
