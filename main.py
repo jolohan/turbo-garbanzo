@@ -88,7 +88,8 @@ class Interface():
 			network = Network(epochs=self.epochs, learning_rate=self.learning_rate,
 							  learning_decay=self.learning_decay, initial_neighborhood=self.initial_neighbourhood,
 							  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager,
-			                  learning_rate_constant=self.learning_rate_constant, dimension = self.dimension)
+			                  learning_rate_constant=self.learning_rate_constant, node_multiplier=self.node_multiplier,
+			                  dimension = self.dimension)
 			while (network.epochs > 0):
 				network.train()
 				if (self.dimension == 1):
@@ -152,6 +153,9 @@ class Interface():
 
 		# 6. Learning Rate Constant
 		self.learning_rate_constant = float(network_dict['LearningRateConstant'][0])
+
+		# 7. Node Multiplier
+		self.node_multiplier = int(network_dict['NodeMultiplier'][0])
 
 
 if __name__ == '__main__':

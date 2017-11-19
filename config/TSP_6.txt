@@ -4,3 +4,5 @@ LearningRate 0.7
 LearningDecay 1000.0
 InitialNeighbourhood 15
 NeighbourhoodDecay 200.0
+LearningRateConstant 0.1
+NodeMultiplier 5

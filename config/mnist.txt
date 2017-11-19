@@ -4,3 +4,4 @@ LearningRate 0.4
 LearningDecay 1000.0
 InitialNeighbourhood 50
 NeighbourhoodDecay 200.0
+NodeMultiplier 1
