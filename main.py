@@ -90,6 +90,7 @@ class Interface():
 							  neighborhood_decay=self.neighbourhood_decay, data_manager=self.data_manager,
 			                  learning_rate_constant=self.learning_rate_constant, node_multiplier=self.node_multiplier,
 			                  dimension = self.dimension)
+			display = Display(network)
 			while (network.epochs > 0):
 				network.train()
 				if (self.dimension == 1):
