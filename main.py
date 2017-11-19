@@ -72,7 +72,7 @@ class Interface():
 			config = input("\nWhich config to run [0/" + str(len(config_dictionary)-1) + "]: ")
 			config_nr = int(config)
 
-			if (config_nr == index):
+			if (config_nr == 0):
 				finished = True
 				break
 		

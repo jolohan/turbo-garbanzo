@@ -16,8 +16,13 @@ class DataManager():
                 row = lines[i]
                 if (row.rstrip() == 'EOF'):
                     break
-                split_list = [r.rstrip() for r in row.split(' ')[1:3]]
-                temp_matrix.append([float(i) for i in split_list])
+                split_list = [r.rstrip() for r in row.split(' ')]
+                coordinates = []
+                for elem in split_list:
+                    if elem != '':
+                        coordinates.append(elem)
+                coordinates = coordinates[1:]
+                temp_matrix.append([float(i) for i in coordinates])
 
         self.input = np.array(temp_matrix)
         self.file = filenumber
